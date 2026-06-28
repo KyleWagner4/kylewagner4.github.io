@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kyle Wagner</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #f8f7f5; --surface: #ffffff; --border: #e8e6e1; --border-strong: #d4d1cc;
+    --text: #1a1a1a; --muted: #6b6b6b; --subtle: #999999;
+    --accent: #2563eb; --accent-bg: #eff6ff; --accent-border: #bfdbfe;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  nav { position: fixed; top: 0; width: 100%; background: rgba(248,247,245,0.94); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 58px; }
+  .nav-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; letter-spacing: 0.8px; text-transform: uppercase; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--text); }
+  main { max-width: 860px; margin: 0 auto; padding: 0 48px; }
+  .hero { padding-top: 148px; padding-bottom: 88px; border-bottom: 1px solid var(--border); }
+  .hero-eyebrow { font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+  .hero h1 { font-size: clamp(40px, 6vw, 68px); font-weight: 700; line-height: 1.04; letter-spacing: -2px; margin-bottom: 22px; color: var(--text); }
+  .hero-bio { font-size: 17px; color: var(--muted); max-width: 500px; line-height: 1.75; margin-bottom: 36px; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 11px 22px; border-radius: 7px; font-size: 13px; font-weight: 500; text-decoration: none; transition: all 0.15s; cursor: pointer; }
+  .btn-primary { background: var(--accent); color: #ffffff; border: 1px solid var(--accent); }
+  .btn-primary:hover { background: #1d4ed8; border-color: #1d4ed8; }
+  .btn-outline { background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); }
+  .btn-outline:hover { border-color: #aaa; background: #f4f3f0; }
+  section { padding: 80px 0 20px; }
+  .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .section-title { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 40px; color: var(--text); }
+  .about-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: start; }
+  .about-text { color: var(--muted); font-size: 15px; line-height: 1.8; }
+  .about-text p + p { margin-top: 14px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+  .stat-value { font-size: 26px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 5px; letter-spacing: -0.5px; }
+  .stat-label { font-size: 12px; color: var(--subtle); }
+  .skills-section { padding: 48px 0 0; border-top: 1px solid var(--border); margin-top: 60px; }
+  .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-tag { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 7px 14px; font-size: 13px; color: var(--muted); }
+  .projects-section { border-top: 1px solid var(--border); padding-top: 80px; }
+  .projects-grid { display: flex; flex-direction: column; gap: 20px; }
+  .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px; text-decoration: none; display: block; transition: border-color 0.15s, box-shadow 0.15s; }
+  .project-card:hover { border-color: var(--accent-border); box-shadow: 0 2px 12px rgba(37,99,235,0.06); }
+  .project-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .project-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 5px; }
+  .project-title { font-size: 18px; font-weight: 600; color: var(--text); }
+  .project-arrow { font-size: 16px; color: var(--subtle); transition: color 0.15s, transform 0.15s; margin-top: 2px; }
+  .project-card:hover .project-arrow { color: var(--accent); transform: translate(2px, -2px); }
+  .project-desc { color: var(--muted); font-size: 14px; line-height: 1.75; margin-bottom: 18px; }
+  .project-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { background: var(--accent-bg); color: var(--accent); border-radius: 4px; padding: 3px 9px; font-size: 11px; font-weight: 500; }
+  .experience-section { border-top: 1px solid var(--border); padding-top: 80px; }
+  .experience-list { display: flex; flex-direction: column; }
+  .experience-item { display: grid; grid-template-columns: 160px 1fr; gap: 32px; padding: 28px 0; border-bottom: 1px solid var(--border); }
+  .experience-item:first-child { padding-top: 0; }
+  .experience-item:last-child { border-bottom: none; }
+  .experience-date { font-size: 12px; color: var(--subtle); padding-top: 3px; line-height: 1.5; }
+  .experience-role { font-size: 16px; font-weight: 600; margin-bottom: 3px; color: var(--text); }
+  .experience-org { font-size: 13px; color: var(--accent); margin-bottom: 10px; font-weight: 500; }
+  .experience-desc { font-size: 14px; color: var(--muted); line-height: 1.75; }
+  .contact-section { border-top: 1px solid var(--border); padding-top: 80px; padding-bottom: 80px; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .contact-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; text-decoration: none; display: flex; align-items: center; gap: 14px; transition: border-color 0.15s; }
+  .contact-card:hover { border-color: var(--accent-border); }
+  .contact-icon { width: 36px; height: 36px; background: var(--accent-bg); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--accent); flex-shrink: 0; font-weight: 700; }
+  .contact-label { font-size: 11px; color: var(--subtle); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 2px; }
+  .contact-value { font-size: 13px; color: var(--text); font-weight: 500; }
+  footer { border-top: 1px solid var(--border); padding: 28px 48px; max-width: 860px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+  .footer-text { font-size: 12px; color: var(--subtle); }
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; } main { padding: 0 20px; }
+    .about-grid { grid-template-columns: 1fr; gap: 32px; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .experience-item { grid-template-columns: 1fr; gap: 6px; }
+    .nav-links { display: none; }
+    footer { padding: 24px 20px; flex-direction: column; gap: 6px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-name">Kyle Wagner</span>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <section class="hero" id="hero">
+    <p class="hero-eyebrow">Finance and Data Analytics</p>
+    <h1>Kyle Wagner</h1>
+    <p class="hero-bio">Business Economics graduate from UC San Diego. I work at the intersection of finance and data, building tools and doing research that turns complex numbers into clear decisions.</p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="resume.pdf" download class="btn btn-outline">Download Resume</a>
+      <a href="https://www.linkedin.com/in/kyle-wagner-01973a365/" target="_blank" class="btn btn-outline">LinkedIn</a>
+      <a href="https://github.com/KyleWagner4" target="_blank" class="btn btn-outline">GitHub</a>
+    </div>
+  </section>
+
+  <section id="about">
+    <p class="section-eyebrow">About</p>
+    <h2 class="section-title">Background</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I graduated from UC San Diego in June 2026 with a B.S. in Business Economics, finishing with a 3.8 GPA and Provost Honors. Before that I completed an AA-T in Economics at Moorpark College, making the Dean's List all four terms.</p>
+        <p>My most recent role was as a Research Associate in the UCSD Economics Department, working 1-on-1 with a PhD researcher on institutional investor behavior and 401(k) revenue-sharing incentives. The research contributed to ongoing work in institutional investment economics.</p>
+        <p>I am looking for roles in FP&A, financial analysis, and corporate finance. Based in the Los Angeles area and open to working anywhere.</p>
+      </div>
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-value">3.8</div>
+          <div class="stat-label">GPA, Provost Honors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">5M+</div>
+          <div class="stat-label">Observations analyzed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">828</div>
+          <div class="stat-label">Retirement plans in dataset</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">2026</div>
+          <div class="stat-label">UCSD graduate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="skills-section">
+    <p class="section-eyebrow" style="margin-bottom:16px;">Technical Skills</p>
+    <div class="skills-grid">
+      <span class="skill-tag">Python (pandas, NumPy)</span>
+      <span class="skill-tag">Stata</span>
+      <span class="skill-tag">R</span>
+      <span class="skill-tag">SQL</span>
+      <span class="skill-tag">Excel and Financial Modeling</span>
+      <span class="skill-tag">Claude / AI Tooling</span>
+      <span class="skill-tag">Econometrics</span>
+      <span class="skill-tag">Panel Regression</span>
+      <span class="skill-tag">Fixed Effects</span>
+      <span class="skill-tag">Large-Scale Data Processing</span>
+    </div>
+  </div>
+
+  <section class="projects-section" id="projects">
+    <p class="section-eyebrow">Projects</p>
+    <h2 class="section-title">What I have built</h2>
+    <div class="projects-grid">
+
+      <a href="https://kyle-portfolio-dashboard.streamlit.app" target="_blank" class="project-card">
+        <div class="project-top">
+          <div>
+            <p class="project-eyebrow">Live Tool</p>
+            <p class="project-title">Portfolio Analytics Dashboard</p>
+          </div>
+          <span class="project-arrow">&#8599;</span>
+        </div>
+        <p class="project-desc">A fully live portfolio tracker built in Python with Streamlit and backed by a Supabase database. Features real-time price feeds, SPY benchmark comparison, historical performance tracking, Monte Carlo simulation across 1,000 paths, Markowitz Efficient Frontier optimization, Sharpe ratio and drawdown analysis, correlation heatmaps, a live news feed per ticker, full transaction history with persistent storage, and one-click PDF report export.</p>
+        <div class="project-tags">
+          <span class="tag">Python</span>
+          <span class="tag">Streamlit</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">Monte Carlo</span>
+          <span class="tag">Markowitz Optimization</span>
+          <span class="tag">Plotly</span>
+          <span class="tag">yfinance</span>
+        </div>
+      </a>
+
+      <div class="project-card" style="cursor:default;">
+        <div class="project-top">
+          <div>
+            <p class="project-eyebrow">Research</p>
+            <p class="project-title">401(k) Revenue-Sharing Empirical Analysis</p>
+          </div>
+        </div>
+        <p class="project-desc">Reconstructed a full 7-step Stata empirical workflow in Python across 5M+ observations Built a multi-level plan-fund panel dataset linking DOL Form 5500 filings with CRSP mutual fund data across 828 retirement plans. Replicated logit regressions with high-dimensional fixed effects and clustered standard errors, demonstrating that revenue-sharing funds are significantly less likely to be removed from 401(k) menus in plans with revenue-sharing arrangements.</p>
+        <div class="project-tags">
+          <span class="tag">Python</span>
+          <span class="tag">Stata</span>
+          <span class="tag">CRSP</span>
+          <span class="tag">DOL Form 5500</span>
+          <span class="tag">Panel Regression</span>
+          <span class="tag">Fixed Effects</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="experience-section" id="experience">
+    <p class="section-eyebrow">Experience</p>
+    <h2 class="section-title">Work history</h2>
+    <div class="experience-list">
+
+      <div class="experience-item">
+        <div class="experience-date">Jun 2025 to Present</div>
+        <div>
+          <p class="experience-role">Research Associate</p>
+          <p class="experience-org">UC San Diego, Department of Economics</p>
+          <p class="experience-desc">Selected from competitive RA cohort to work 1-on-1 with a PhD researcher on institutional investor behavior and 401(k) revenue-sharing incentives. Reconstructed a 7-step Stata workflow in Python with variable-level verification across 5M+ observations. Built multi-level panel datasets linking DOL Form 5500 and CRSP data. Replicated logit regressions with high-dimensional fixed effects with high-dimensional fixed effects and clustered standard errors.</p>
+        </div>
+      </div>
+
+      <div class="experience-item">
+        <div class="experience-date">Jun 2019 to Sep 2023</div>
+        <div>
+          <p class="experience-role">Lifeguard and Swim Instructor</p>
+          <p class="experience-org">Conejo Recreation and Park District</p>
+          <p class="experience-desc">Instructed and supervised swimmers of all ages. Taught adaptive lessons for individuals with special needs and provided free instruction to underserved youth through the Safe Passage Program.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="contact-section" id="contact">
+    <p class="section-eyebrow">Contact</p>
+    <h2 class="section-title">Get in touch</h2>
+    <div class="contact-grid">
+      <a href="mailto:wagnerkc03@yahoo.com" class="contact-card">
+        <div class="contact-icon">@</div>
+        <div>
+          <p class="contact-label">Email</p>
+          <p class="contact-value">wagnerkc03@yahoo.com</p>
+        </div>
+      </a>
+      <a href="https://www.linkedin.com/in/kyle-wagner-01973a365/" target="_blank" class="contact-card">
+        <div class="contact-icon">in</div>
+        <div>
+          <p class="contact-label">LinkedIn</p>
+          <p class="contact-value">kyle-wagner-01973a365</p>
+        </div>
+      </a>
+      <a href="https://github.com/KyleWagner4" target="_blank" class="contact-card">
+        <div class="contact-icon">gh</div>
+        <div>
+          <p class="contact-label">GitHub</p>
+          <p class="contact-value">KyleWagner4</p>
+        </div>
+      </a>
+      <a href="https://kyle-portfolio-dashboard.streamlit.app" target="_blank" class="contact-card">
+        <div class="contact-icon">&#8599;</div>
+        <div>
+          <p class="contact-label">Portfolio Tool</p>
+          <p class="contact-value">kyle-portfolio-dashboard.streamlit.app</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p class="footer-text">Kyle Wagner, Thousand Oaks CA, 2026</p>
+  <p class="footer-text">Built from scratch</p>
+</footer>
+
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>
