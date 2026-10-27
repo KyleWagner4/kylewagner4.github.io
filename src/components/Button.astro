@@ -1,0 +1,86 @@
+---
+/*
+  Renders <a> when href is set, otherwise <button>.
+  primary is the single accent action on a page; secondary is quiet.
+*/
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+  variant?: 'primary' | 'secondary';
+  href?: string;
+  download?: boolean;
+  arrow?: boolean;
+} & Omit<HTMLAttributes<'button'>, 'class'> & { class?: string };
+
+const { variant = 'secondary', href, download, arrow = false, class: className, type = 'button', ...attrs } = Astro.props;
+const classes = ['button', `button-${variant}`, className];
+---
+
+{
+  href ? (
+    <a class:list={classes} href={href} download={download}>
+      <slot />
+      {arrow && <span class="arrow" aria-hidden="true">→</span>}
+    </a>
+  ) : (
+    <button class:list={classes} type={type} {...attrs}>
+      <slot />
+      {arrow && <span class="arrow" aria-hidden="true">→</span>}
+    </button>
+  )
+}
+
+<style>
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-block-size: 2.75rem; /* 44px touch target */
+    padding-inline: var(--space-4);
+    border: var(--hairline) solid transparent;
+    border-radius: var(--radius);
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: var(--weight-ui-strong);
+    line-height: 1;
+    letter-spacing: 0.005em;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      translate var(--dur-instant) var(--ease-out);
+  }
+
+  .button:active {
+    translate: 0 calc(var(--nudge) / 2);
+  }
+
+  .button-primary {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  .button-primary:hover {
+    background: var(--accent-hover);
+  }
+
+  .button-secondary {
+    background: transparent;
+    border-color: var(--rule-control);
+    color: var(--ink);
+  }
+
+  .button-secondary:hover {
+    border-color: var(--ink);
+  }
+
+  .arrow {
+    transition: translate var(--dur-fast) var(--ease-out);
+  }
+
+  .button:hover .arrow {
+    translate: var(--nudge) 0;
+  }
+</style>

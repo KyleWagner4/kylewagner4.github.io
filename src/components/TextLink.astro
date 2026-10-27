@@ -1,0 +1,63 @@
+---
+/*
+  Standalone link (nav, "read the case study", outbound). Inline prose
+  links need no component; base styles cover them. External links open
+  in the same tab and are marked with an arrow plus a screen-reader note.
+*/
+interface Props {
+  href: string;
+  external?: boolean;
+  class?: string;
+}
+
+const { href, class: className } = Astro.props;
+const external = Astro.props.external ?? /^https?:\/\//.test(href);
+---
+
+<a class:list={['text-link', className]} href={href} rel={external ? 'noopener' : undefined}>
+  <slot />
+  {
+    external ? (
+      <>
+        <span class="arrow arrow-out" aria-hidden="true">↗</span>
+        <span class="visually-hidden">(external site)</span>
+      </>
+    ) : (
+      <span class="arrow" aria-hidden="true">→</span>
+    )
+  }
+</a>
+
+<style>
+  .text-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3em;
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: var(--weight-ui-strong);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .text-link:hover {
+    color: var(--accent);
+  }
+
+  .arrow {
+    display: inline-block;
+    color: var(--ink-3);
+    transition:
+      translate var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  .text-link:hover .arrow {
+    color: currentColor;
+    translate: var(--nudge) 0;
+  }
+
+  .text-link:hover .arrow-out {
+    translate: var(--nudge) calc(var(--nudge) * -1);
+  }
+</style>

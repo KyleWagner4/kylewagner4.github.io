@@ -1,0 +1,74 @@
+---
+/*
+  Cycles System → Light → Dark. The choice is stored per browser and
+  restored before paint by BaseLayout. The swap crossfades through a
+  view transition unless reduced motion is requested.
+*/
+---
+
+<button class="theme-toggle" type="button" data-theme-toggle>
+  <span class="t-data-label">Theme</span>
+  <span class="t-data current" data-theme-label aria-live="polite">System</span>
+</button>
+
+<script>
+  const order = ['system', 'light', 'dark'] as const;
+  type Theme = (typeof order)[number];
+  const root = document.documentElement;
+
+  const read = (): Theme => (root.dataset.theme === 'light' || root.dataset.theme === 'dark' ? root.dataset.theme : 'system');
+
+  function apply(theme: Theme) {
+    try {
+      if (theme === 'system') localStorage.removeItem('theme');
+      else localStorage.setItem('theme', theme);
+    } catch {}
+    if (theme === 'system') delete root.dataset.theme;
+    else root.dataset.theme = theme;
+  }
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')) {
+    const label = button.querySelector('[data-theme-label]');
+    const render = () => {
+      const theme = read();
+      if (label) label.textContent = theme[0].toUpperCase() + theme.slice(1);
+    };
+    render();
+
+    button.addEventListener('click', () => {
+      const next = order[(order.indexOf(read()) + 1) % order.length];
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (document.startViewTransition && !reduce) {
+        document.startViewTransition(() => apply(next));
+      } else {
+        apply(next);
+      }
+      render();
+    });
+  }
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-block-size: 2.75rem;
+    padding-inline: var(--space-3);
+    border: var(--hairline) solid var(--rule-control);
+    border-radius: var(--radius);
+    background: transparent;
+    cursor: pointer;
+    transition: border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--ink);
+  }
+
+  .current {
+    min-inline-size: 3.6em;
+    text-align: start;
+    color: var(--ink);
+  }
+</style>
