@@ -96,10 +96,11 @@ const sampleRows = [
           from <code>src/styles/tokens.css</code>; all figures are illustrative.
         </p>
       </Cell>
-      <Cell lg={{ start: 10, span: 3 }} class="masthead-tools">
+      <Cell lg={{ start: 10, span: 3 }} subgrid class="masthead-tools">
         <ThemeToggle />
-        <button class="overlay-toggle t-data" type="button" aria-pressed="false" data-grid-toggle>
-          Grid overlay
+        <button class="overlay-toggle" type="button" aria-pressed="false" data-grid-toggle>
+          <span class="t-data-label">Grid overlay</span>
+          <span class="t-data current" aria-hidden="true" data-grid-state>Off</span>
         </button>
       </Cell>
       <Cell as="nav" aria-label="Sections" class="toc">
@@ -133,7 +134,7 @@ const sampleRows = [
         </Cell>
 
         <Cell lg={{ start: 4, span: 9 }} subgrid class="specimens">
-          <h3 class="t-data-label sub">Roles</h3>
+          <h3 class="t-label sub">Roles</h3>
 
           <div class="specimen">
             <p class="meta t-data">Display<br /><span>step 7 · 380 · opsz 60</span></p>
@@ -197,7 +198,7 @@ const sampleRows = [
             <p class="t-figure">$8,837</p>
           </div>
 
-          <h3 class="t-data-label sub">Scale</h3>
+          <h3 class="t-label sub">Scale</h3>
           <div class="wide">
             <table class="scale t-data">
               <caption class="visually-hidden">Type scale steps</caption>
@@ -228,7 +229,7 @@ const sampleRows = [
             </table>
           </div>
 
-          <h3 class="t-data-label sub">Optical size</h3>
+          <h3 class="t-label sub">Optical size</h3>
           <div class="wide opsz">
             {
               [8, 20, 60].map((o) => (
@@ -244,7 +245,7 @@ const sampleRows = [
             </p>
           </div>
 
-          <h3 class="t-data-label sub">Figures</h3>
+          <h3 class="t-label sub">Figures</h3>
           <div class="wide figures">
             <figure>
               <figcaption class="t-data-label">Proportional</figcaption>
@@ -280,7 +281,7 @@ const sampleRows = [
           {
             (['light', 'dark'] as const).map((theme) => (
               <div class="palette" data-theme={theme}>
-                <p class="t-data-label">{theme === 'light' ? 'Light' : 'Dark'}</p>
+                <p class="t-label">{theme === 'light' ? 'Light' : 'Dark'}</p>
                 <ul role="list" class="swatches">
                   {[...surfaces, ...signals].map((c) => (
                     <li class="swatch">
@@ -384,7 +385,7 @@ const sampleRows = [
         </Cell>
 
         <Cell lg={{ start: 4, span: 9 }} class="grid-intro after-demo">
-          <h3 class="t-data-label sub-inline">Subgrid</h3>
+          <h3 class="t-label sub-inline">Subgrid</h3>
           <p class="measure">
             Each row below is its own element, yet its number, title, summary and metric share the
             page’s columns through <code>grid-template-columns: subgrid</code>. Sample content.
@@ -426,7 +427,7 @@ const sampleRows = [
 
         <Cell lg={{ start: 4, span: 9 }} class="component-list">
           <div class="component">
-            <h3 class="t-data-label">Buttons</h3>
+            <h3 class="t-label">Buttons</h3>
             <div class="row">
               <Button variant="primary" href="/resume.pdf" download>Download résumé</Button>
               <Button href="#components" arrow>Read the case study</Button>
@@ -435,7 +436,7 @@ const sampleRows = [
           </div>
 
           <div class="component">
-            <h3 class="t-data-label">Links</h3>
+            <h3 class="t-label">Links</h3>
             <div class="row">
               <TextLink href="#components">All case studies</TextLink>
               <TextLink href="https://github.com/KyleWagner4">GitHub</TextLink>
@@ -446,7 +447,7 @@ const sampleRows = [
           </div>
 
           <div class="component">
-            <h3 class="t-data-label">Rules</h3>
+            <h3 class="t-label">Rules</h3>
             <div class="rules">
               <hr />
               <hr class="rule-strong" />
@@ -456,7 +457,7 @@ const sampleRows = [
           </div>
 
           <div class="component">
-            <h3 class="t-data-label">Key figures</h3>
+            <h3 class="t-label">Key figures</h3>
             <dl class="stats">
               <Stat label="Annualized yield" value={14.2} format={{ style: 'percent', decimals: 1, percentUnits: true }} delta={1.8} deltaFormat={{ decimals: 1 }} note="pts vs. last month" />
               <Stat label="Premium per contract" value={185} format={{ style: 'currency' }} delta={-12} deltaFormat={{ style: 'currency' }} note="vs. prior week" />
@@ -466,7 +467,7 @@ const sampleRows = [
           </div>
 
           <div class="component">
-            <h3 class="t-data-label">Statement table</h3>
+            <h3 class="t-label">Statement table</h3>
             <FinancialTable
               caption="Covered call income, sample portfolio"
               unit="USD · illustrative"
@@ -478,7 +479,7 @@ const sampleRows = [
           </div>
 
           <div class="component">
-            <h3 class="t-data-label">Inputs</h3>
+            <h3 class="t-label">Inputs</h3>
             <div class="fields">
               <NumberField id="sg-price" label="Share price" prefix="$" value="48.20" />
               <NumberField id="sg-strike" label="Strike" prefix="$" value="50.00" />
@@ -502,7 +503,7 @@ const sampleRows = [
         </Cell>
         <Cell lg={{ start: 4, span: 9 }} class="component-list">
           <div class="component">
-            <h3 class="t-data-label">Easing</h3>
+            <h3 class="t-label">Easing</h3>
             <ul role="list" class="easings">
               {
                 easings.map((e) => (
@@ -520,7 +521,7 @@ const sampleRows = [
           </div>
 
           <div class="component">
-            <h3 class="t-data-label">Duration</h3>
+            <h3 class="t-label">Duration</h3>
             <table class="spaces t-data">
               <caption class="visually-hidden">Durations</caption>
               <tbody>
@@ -540,7 +541,7 @@ const sampleRows = [
           </div>
 
           <div class="component">
-            <h3 class="t-data-label">Scroll reveal</h3>
+            <h3 class="t-label">Scroll reveal</h3>
             <p class="measure">
               <code>.reveal</code> fades content up as it enters the viewport, driven
               by <code>animation-timeline: view()</code> in CSS rather than scroll listeners.
@@ -563,9 +564,11 @@ const sampleRows = [
 
 <script>
   const toggle = document.querySelector<HTMLButtonElement>('[data-grid-toggle]');
+  const state = toggle?.querySelector('[data-grid-state]');
   toggle?.addEventListener('click', () => {
     const on = toggle.getAttribute('aria-pressed') !== 'true';
     toggle.setAttribute('aria-pressed', String(on));
+    if (state) state.textContent = on ? 'On' : 'Off';
     document.documentElement.toggleAttribute('data-grid-overlay', on);
   });
 </script>
@@ -576,23 +579,37 @@ const sampleRows = [
     padding-block: var(--space-16) var(--space-12);
   }
 
+  /* A subgrid, so each control's edges sit on column lines: six columns
+     apiece side by side, or stacked across the three-column cell. */
   .masthead-tools {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
+    row-gap: var(--space-2);
     align-content: start;
     margin-block-start: var(--space-8);
   }
 
+  .masthead-tools > :global(button) {
+    grid-column: span 6;
+    justify-content: space-between;
+  }
+
+  .masthead-tools :global(.current) {
+    text-align: end;
+  }
+
   @media (min-width: 64rem) {
     .masthead-tools {
-      display: grid;
-      justify-items: end;
       margin-block-start: 0;
+    }
+
+    .masthead-tools > :global(button) {
+      grid-column: 1 / -1;
     }
   }
 
   .overlay-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
     min-block-size: 2.75rem;
     padding-inline: var(--space-3);
     border: var(--hairline) solid var(--rule-control);
@@ -602,6 +619,10 @@ const sampleRows = [
     transition:
       border-color var(--dur-fast) var(--ease-out),
       background-color var(--dur-fast) var(--ease-out);
+  }
+
+  .overlay-toggle .current {
+    color: var(--ink);
   }
 
   .overlay-toggle:hover {
@@ -615,6 +636,7 @@ const sampleRows = [
 
   .toc {
     margin-block-start: var(--space-12);
+    border-block-start: var(--hairline) solid var(--ink);
   }
 
   .toc-list {
@@ -622,7 +644,73 @@ const sampleRows = [
     flex-wrap: wrap;
     gap: var(--space-2) var(--space-8);
     padding-block-start: var(--space-3);
-    border-block-start: var(--hairline) solid var(--ink);
+  }
+
+  /* Below desktop: one row that scrolls sideways and bleeds to the
+     viewport edge, with the scrollbar hidden. A short fade marks each side
+     that has more to see; where scroll timelines are supported it tracks
+     the scroll position, so the fade clears at either end. */
+  @property --toc-fade-start {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+  }
+
+  @property --toc-fade-end {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+  }
+
+  @media (width < 64rem) {
+    .toc-list {
+      --toc-fade-end: var(--space-8);
+      flex-wrap: nowrap;
+      margin-inline: calc(-1 * var(--grid-margin));
+      /* Room below for the focus ring, which the scroller would clip. */
+      padding: var(--space-3) var(--grid-margin) var(--space-2);
+      margin-block-end: calc(-1 * var(--space-2));
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scroll-padding-inline: var(--space-8);
+      scrollbar-width: none;
+      white-space: nowrap;
+      mask-image: linear-gradient(
+        to right,
+        transparent,
+        #000 var(--toc-fade-start),
+        #000 calc(100% - var(--toc-fade-end)),
+        transparent
+      );
+    }
+
+    .toc-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Linear maps the fade directly to scroll position; it is not motion. */
+    @supports (animation-timeline: scroll()) {
+      .toc-list {
+        animation: toc-fade linear both;
+        animation-timeline: scroll(self inline);
+      }
+    }
+  }
+
+  @keyframes toc-fade {
+    0% {
+      --toc-fade-start: 0px;
+      --toc-fade-end: var(--space-8);
+    }
+    10%,
+    90% {
+      --toc-fade-start: var(--space-8);
+      --toc-fade-end: var(--space-8);
+    }
+    100% {
+      --toc-fade-start: var(--space-8);
+      --toc-fade-end: 0px;
+    }
   }
 
   .toc-list a {
