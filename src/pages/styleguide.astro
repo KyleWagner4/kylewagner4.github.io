@@ -550,6 +550,18 @@ const sampleRows = [
               {[1, 2, 3].map((n) => <div class="reveal reveal-card t-data">Reveal {n}</div>)}
             </div>
           </div>
+
+          <div class="component">
+            <h3 class="t-label">Rule draw</h3>
+            <p class="measure">
+              <code>.rule-draw</code> replaces a top border with a hairline that is drawn from the
+              left as the row scrolls into view, finished before it reaches mid-screen. Used on
+              index rows and statement lines.
+            </p>
+            <div class="rule-draw-demo">
+              {['Revenue', 'Gross profit', 'Operating income'].map((label) => <p class="rule-draw t-data">{label}</p>)}
+            </div>
+          </div>
         </Cell>
       </div>
     </section>
@@ -1111,6 +1123,10 @@ const sampleRows = [
     background: var(--paper-sunken);
     border-block-start: var(--hairline) solid var(--rule-strong);
     color: var(--ink-2);
+  }
+
+  .rule-draw-demo p {
+    padding-block: var(--space-3);
   }
 
   /* ---------------------------------------------------------- Overlay */

@@ -18,7 +18,7 @@ const { index, title, href, summary, metric, headingLevel = 3 } = Astro.props;
 const Heading = `h${headingLevel}` as const;
 ---
 
-<li class="entry cell subgrid">
+<li class="entry cell subgrid rule-draw">
   <span class="number t-data" aria-hidden="true">{String(index).padStart(2, '0')}</span>
   <Heading class="title t-subtitle">
     <a href={href}>
@@ -41,7 +41,6 @@ const Heading = `h${headingLevel}` as const;
     position: relative;
     row-gap: var(--space-3);
     padding-block: var(--space-6) var(--space-8);
-    border-block-start: var(--hairline) solid var(--rule);
   }
 
   /* Zero specificity, so the placements below win over this default

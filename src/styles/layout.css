@@ -100,4 +100,41 @@
       translate: 0 var(--space-4);
     }
   }
+
+  /* A hairline across the top of the element, used in place of
+     border-block-start. As the row scrolls up into view the line is
+     drawn from the left, like a ledger rule, and is complete before the
+     row reaches mid-screen. Without support, or with reduced motion, it
+     is simply there. Set --rule-draw-color to change the ink. */
+  .rule-draw {
+    position: relative;
+    view-timeline: --rule-draw block;
+  }
+
+  .rule-draw::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    block-size: var(--hairline);
+    background: var(--rule-draw-color, var(--rule));
+    transform-origin: left;
+    pointer-events: none;
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .rule-draw::before {
+        animation: rule-draw both var(--ease-out);
+        animation-timeline: --rule-draw;
+        animation-range: entry 0% cover 35%;
+      }
+    }
+  }
+
+  @keyframes rule-draw {
+    from {
+      scale: 0 1;
+    }
+  }
 }
