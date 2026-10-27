@@ -1,0 +1,41 @@
+---
+/*
+  Places content on the 12-column grid. span/start apply at all sizes;
+  md (48rem+) and lg (64rem+) override them. subgrid passes the parent's
+  columns through so children align to the page grid.
+*/
+import type { HTMLTag } from 'astro/types';
+
+interface Placement {
+  span?: number;
+  start?: number;
+}
+
+interface Props extends Placement {
+  as?: HTMLTag;
+  md?: Placement;
+  lg?: Placement;
+  subgrid?: boolean;
+  class?: string;
+  [attr: string]: unknown;
+}
+
+const { as: Tag = 'div', span, start, md, lg, subgrid = false, class: className, ...attrs } = Astro.props;
+
+const vars: Record<string, number | undefined> = {
+  '--span': span,
+  '--start': start,
+  '--span-md': md?.span,
+  '--start-md': md?.start,
+  '--span-lg': lg?.span,
+  '--start-lg': lg?.start,
+};
+const style = Object.entries(vars)
+  .filter(([, value]) => value !== undefined)
+  .map(([name, value]) => `${name}: ${value}`)
+  .join('; ');
+---
+
+<Tag class:list={['cell', { subgrid }, className]} style={style || undefined} {...attrs}>
+  <slot />
+</Tag>
