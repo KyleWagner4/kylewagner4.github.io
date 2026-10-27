@@ -1,0 +1,1049 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Cell from '../components/Cell.astro';
+import Button from '../components/Button.astro';
+import TextLink from '../components/TextLink.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import Stat from '../components/Stat.astro';
+import FinancialTable from '../components/FinancialTable.astro';
+import NumberField from '../components/NumberField.astro';
+import IndexEntry from '../components/IndexEntry.astro';
+
+const sections = [
+  { id: 'type', title: 'Typography' },
+  { id: 'color', title: 'Color' },
+  { id: 'spacing', title: 'Spacing' },
+  { id: 'grid', title: 'Grid' },
+  { id: 'components', title: 'Components' },
+  { id: 'motion', title: 'Motion' },
+];
+
+// Ranges mirror the comments in tokens.css.
+const scale = [
+  { step: 7, range: '45.2–90.6', use: 'Display' },
+  { step: 6, range: '39.3–72.5', use: '' },
+  { step: 5, range: '34.2–58.0', use: 'Headline, figure' },
+  { step: 4, range: '29.7–46.4', use: '' },
+  { step: 3, range: '25.9–37.1', use: 'Title' },
+  { step: 2, range: '22.5–29.7', use: '' },
+  { step: 1, range: '19.5–23.8', use: 'Subtitle, lede' },
+  { step: 0, range: '17.0–19.0', use: 'Body' },
+  { step: -1, range: '14.8–15.2', use: 'Caption, data' },
+  { step: -2, range: '12.5–12.8', use: 'Data label' },
+];
+
+const surfaces = [
+  { token: 'paper', role: 'Page background' },
+  { token: 'paper-sunken', role: 'Recessed areas, code' },
+  { token: 'paper-raised', role: 'Inputs, raised panels' },
+  { token: 'ink', role: 'Primary text' },
+  { token: 'ink-2', role: 'Secondary text' },
+  { token: 'ink-3', role: 'Captions, metadata' },
+  { token: 'rule', role: 'Hairline structure' },
+  { token: 'rule-strong', role: 'Subtotals, emphasis' },
+  { token: 'rule-control', role: 'Input borders (3:1)' },
+];
+
+const signals = [
+  { token: 'accent', role: 'The one accent' },
+  { token: 'accent-hover', role: 'Accent, pressed or hovered' },
+  { token: 'accent-wash', role: 'Faint accent ground' },
+  { token: 'positive', role: 'Gains, in data only' },
+  { token: 'negative', role: 'Losses, in data only' },
+];
+
+const spaces = [1, 2, 3, 4, 6, 8, 12, 16, 24, 32];
+
+const easings = [
+  { token: 'ease-out', curve: [0.2, 0.8, 0.2, 1], use: 'Default: arrivals, hovers, reveals' },
+  { token: 'ease-in-out', curve: [0.6, 0, 0.3, 1], use: 'Moves between two resting states' },
+  { token: 'ease-in', curve: [0.5, 0, 0.75, 0], use: 'Exits only' },
+];
+const durations = [
+  { token: 'dur-instant', ms: 90, use: 'Press feedback' },
+  { token: 'dur-fast', ms: 160, use: 'Hover, focus, color' },
+  { token: 'dur-base', ms: 240, use: 'Page and theme transitions' },
+  { token: 'dur-slow', ms: 420, use: 'Larger value changes' },
+];
+
+const curvePath = ([x1, y1, x2, y2]: number[]) =>
+  `M0 48 C${x1 * 48} ${48 - y1 * 48} ${x2 * 48} ${48 - y2 * 48} 48 0`;
+
+const sampleRows = [
+  { label: 'Income', kind: 'section' as const },
+  { label: 'Option premium collected', values: [1850, 2120, 1640, 2310, 7920], indent: true },
+  { label: 'Dividends received', values: [420, 420, 440, 440, 1720], indent: true },
+  { label: 'Gross income', values: [2270, 2540, 2080, 2750, 9640], kind: 'subtotal' as const },
+  { label: 'Costs', kind: 'section' as const },
+  { label: 'Commissions and fees', values: [-26, -31, -22, -34, -113], indent: true },
+  { label: 'Losses on assignment', values: [null, -480, null, -210, -690], indent: true },
+  { label: 'Net income', values: [2244, 2029, 2058, 2506, 8837], kind: 'total' as const },
+];
+---
+
+<BaseLayout
+  title="Style guide · Kyle Wagner"
+  description="Type, color, spacing, grid and components for kylewagner4.github.io."
+  noindex
+>
+  <header class="masthead">
+    <div class="container grid">
+      <Cell lg={{ span: 8 }} class="stack" style="--stack-space: var(--space-6)">
+        <p class="t-label">Style guide · v0.1</p>
+        <h1 class="t-headline">A system for numbers that read&nbsp;clearly</h1>
+        <p class="t-lede measure">
+          Calm at first glance, precise on inspection. Every value below comes
+          from <code>src/styles/tokens.css</code>; all figures are illustrative.
+        </p>
+      </Cell>
+      <Cell lg={{ start: 10, span: 3 }} class="masthead-tools">
+        <ThemeToggle />
+        <button class="overlay-toggle t-data" type="button" aria-pressed="false" data-grid-toggle>
+          Grid overlay
+        </button>
+      </Cell>
+      <Cell as="nav" aria-label="Sections" class="toc">
+        <ol role="list" class="toc-list">
+          {
+            sections.map((s, i) => (
+              <li>
+                <a href={`#${s.id}`} class="t-data">
+                  <span class="toc-num">{String(i + 1).padStart(2, '0')}</span>
+                  {s.title}
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </Cell>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================================================ Type -->
+    <section class="section section-ruled" id="type" aria-labelledby="type-title">
+      <div class="container grid">
+        <Cell lg={{ span: 3 }} class="section-head">
+          <p class="t-label">01</p>
+          <h2 class="t-title" id="type-title">Typography</h2>
+          <p class="t-caption">
+            Source Serif 4 for reading, display and small caps; Inter for data and interface.
+            Both variable, with optical sizing tuned per role.
+          </p>
+        </Cell>
+
+        <Cell lg={{ start: 4, span: 9 }} subgrid class="specimens">
+          <h3 class="t-data-label sub">Roles</h3>
+
+          <div class="specimen">
+            <p class="meta t-data">Display<br /><span>step 7 · 380 · opsz 60</span></p>
+            <p class="t-display">I build financial models and the tools that automate&nbsp;them.</p>
+          </div>
+          <div class="specimen">
+            <p class="meta t-data">Headline<br /><span>step 5 · 380 · opsz 60</span></p>
+            <p class="t-headline">Driver-based forecasts, explained in plain&nbsp;terms</p>
+          </div>
+          <div class="specimen">
+            <p class="meta t-data">Title<br /><span>step 3 · 540 · opsz 32</span></p>
+            <p class="t-title">Normalizing XBRL across reporting conventions</p>
+          </div>
+          <div class="specimen">
+            <p class="meta t-data">Subtitle<br /><span>step 1 · 540</span></p>
+            <p class="t-subtitle">How the morning report is assembled</p>
+          </div>
+          <div class="specimen">
+            <p class="meta t-data">Lede<br /><span>step 1 · ink-2</span></p>
+            <p class="t-lede measure">
+              Six recession signals, each computed from raw series with its threshold in plain view.
+            </p>
+          </div>
+          <div class="specimen">
+            <p class="meta t-data">Body<br /><span>step 0 · 400 · auto opsz</span></p>
+            <div class="t-body measure stack">
+              <p>
+                The analyzer pulls statements from <abbr>SEC</abbr> <abbr>EDGAR</abbr>, maps each
+                company’s tags to a common chart of accounts, and computes ratios for 2015–2024. It’s
+                built for <abbr>FP&amp;A</abbr> work: the question is never “what did they report?”
+                but “what does it mean for next quarter?”
+              </p>
+              <p>
+                “Hanging punctuation” lets quotation marks sit outside the text edge, so the left
+                margin stays optically straight. Supporting browsers apply it; others fall back
+                cleanly.
+              </p>
+            </div>
+          </div>
+          <div class="specimen">
+            <p class="meta t-data">Caption<br /><span>step −1 · opsz 9 · ink-3</span></p>
+            <p class="t-caption measure">
+              Source: Federal Reserve Economic Data. Shaded bands mark recessions as dated by
+              the <abbr>NBER</abbr>.
+            </p>
+          </div>
+          <div class="specimen">
+            <p class="meta t-data">Label<br /><span>small caps · +0.075em</span></p>
+            <p class="t-label">Case study · Automation</p>
+          </div>
+          <div class="specimen">
+            <p class="meta t-data">Data<br /><span>Inter · step −1 · tnum</span></p>
+            <p class="t-data">Strike $50.00 · Premium $1.85 · 30 days · 14.2% annualized</p>
+          </div>
+          <div class="specimen">
+            <p class="meta t-data">Data label<br /><span>Inter caps · +0.06em</span></p>
+            <p class="t-data-label">Annualized yield</p>
+          </div>
+          <div class="specimen">
+            <p class="meta t-data">Figure<br /><span>step 5 · opsz 60 · tnum</span></p>
+            <p class="t-figure">$8,837</p>
+          </div>
+
+          <h3 class="t-data-label sub">Scale</h3>
+          <div class="wide">
+            <table class="scale t-data">
+              <caption class="visually-hidden">Type scale steps</caption>
+              <thead>
+                <tr>
+                  <th scope="col" class="t-data-label">Step</th>
+                  <th scope="col" class="t-data-label num">px, 360–1440</th>
+                  <th scope="col" class="t-data-label">Use</th>
+                  <th scope="col" class="t-data-label"><span class="visually-hidden">Sample</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  scale.map((s) => (
+                    <tr>
+                      <th scope="row">
+                        <code>--step-{s.step < 0 ? `-${Math.abs(s.step)}` : s.step}</code>
+                      </th>
+                      <td class="num">{s.range}</td>
+                      <td class="use">{s.use}</td>
+                      <td class="sample" style={`font-size: var(--step-${s.step})`} aria-hidden="true">
+                        Ag
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="t-data-label sub">Optical size</h3>
+          <div class="wide opsz">
+            {
+              [8, 20, 60].map((o) => (
+                <figure>
+                  <p style={`font-variation-settings: "opsz" ${o}`}>Ratio</p>
+                  <figcaption class="t-data-label">opsz {o}</figcaption>
+                </figure>
+              ))
+            }
+            <p class="t-caption opsz-note">
+              Same size, three optical cuts. Small sizes get sturdier serifs and looser spacing; the
+              display cut has finer contrast.
+            </p>
+          </div>
+
+          <h3 class="t-data-label sub">Figures</h3>
+          <div class="wide figures">
+            <figure>
+              <figcaption class="t-data-label">Proportional</figcaption>
+              <p class="nums" style="font-variant-numeric: proportional-nums">
+                1,111.11<br />8,888.88<br />40,071.50<br />(2,104.19)
+              </p>
+            </figure>
+            <figure>
+              <figcaption class="t-data-label">Tabular, the default</figcaption>
+              <p class="nums">1,111.11<br />8,888.88<br />40,071.50<br />(2,104.19)</p>
+            </figure>
+            <p class="t-caption">
+              Tabular lining figures are set on the body, so every number on the site lines up in
+              columns like a statement.
+            </p>
+          </div>
+        </Cell>
+      </div>
+    </section>
+
+    <!-- =========================================================== Color -->
+    <section class="section section-ruled" id="color" aria-labelledby="color-title">
+      <div class="container grid">
+        <Cell lg={{ span: 3 }} class="section-head">
+          <p class="t-label">02</p>
+          <h2 class="t-title" id="color-title">Color</h2>
+          <p class="t-caption">
+            OKLCH throughout. Warm paper by day, warm graphite by night; one ink-blue accent. Dark
+            mode is tuned separately: lifted off black, calmer accent, lighter text weight.
+          </p>
+        </Cell>
+        <Cell lg={{ start: 4, span: 9 }} class="palettes">
+          {
+            (['light', 'dark'] as const).map((theme) => (
+              <div class="palette" data-theme={theme}>
+                <p class="t-data-label">{theme === 'light' ? 'Light' : 'Dark'}</p>
+                <ul role="list" class="swatches">
+                  {[...surfaces, ...signals].map((c) => (
+                    <li class="swatch">
+                      <span class="chip" style={`background: var(--${c.token})`} />
+                      <code>--{c.token}</code>
+                      <span class="t-caption">{c.role}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p class="sample-text">
+                  Net income rose to <strong>$8,837</strong>,{' '}
+                  <span style="color: var(--positive)">+12.4%</span> on the year; costs were{' '}
+                  <span style="color: var(--negative)">(803)</span>.{' '}
+                  <a href="#color">An inline link</a>.
+                </p>
+              </div>
+            ))
+          }
+        </Cell>
+      </div>
+    </section>
+
+    <!-- ========================================================= Spacing -->
+    <section class="section section-ruled" id="spacing" aria-labelledby="spacing-title">
+      <div class="container grid">
+        <Cell lg={{ span: 3 }} class="section-head">
+          <p class="t-label">03</p>
+          <h2 class="t-title" id="spacing-title">Spacing</h2>
+          <p class="t-caption">
+            One unit, 4px. <code>--space-N</code> is N units, so every gap is a multiple of the
+            same base.
+          </p>
+        </Cell>
+        <Cell lg={{ start: 4, span: 9 }}>
+          <table class="spaces t-data">
+            <caption class="visually-hidden">Spacing scale</caption>
+            <thead>
+              <tr>
+                <th scope="col" class="t-data-label">Token</th>
+                <th scope="col" class="t-data-label num">Units</th>
+                <th scope="col" class="t-data-label num">px</th>
+                <th scope="col"><span class="visually-hidden">Size</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                spaces.map((n) => (
+                  <tr>
+                    <th scope="row">
+                      <code>--space-{n}</code>
+                    </th>
+                    <td class="num">{n}</td>
+                    <td class="num">{n * 4}</td>
+                    <td>
+                      <span class="bar" style={`inline-size: var(--space-${n})`} />
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+          <p class="t-caption spaces-note">
+            Fluid tokens: <code>--space-section</code> (64–128),
+            <code>--grid-gutter</code> (16–32), <code>--grid-margin</code> (16–96).
+          </p>
+        </Cell>
+      </div>
+    </section>
+
+    <!-- ============================================================ Grid -->
+    <section class="section section-ruled" id="grid" aria-labelledby="grid-title">
+      <div class="container grid">
+        <Cell lg={{ span: 3 }} class="section-head static">
+          <p class="t-label">04</p>
+          <h2 class="t-title" id="grid-title">Grid</h2>
+          <p class="t-caption">
+            Twelve columns at every size, max 82rem. Compositions are asymmetric: a narrow label
+            column against a wide content column.
+          </p>
+        </Cell>
+        <Cell lg={{ start: 4, span: 9 }} class="grid-intro">
+          <p class="measure">
+            Toggle the <strong>grid overlay</strong> at the top of the page to check any section
+            against the columns.
+          </p>
+        </Cell>
+
+        <Cell class="demo-row" subgrid aria-hidden="true">
+          {Array.from({ length: 12 }, (_, i) => <span class="col t-data" style={`grid-column: ${i + 1}`}>{i + 1}</span>)}
+        </Cell>
+        <Cell class="demo-row" subgrid aria-hidden="true">
+          <span class="block t-data" style="grid-column: 1 / span 3">3</span>
+          <span class="block t-data" style="grid-column: 4 / span 9">9</span>
+        </Cell>
+        <Cell class="demo-row" subgrid aria-hidden="true">
+          <span class="block t-data" style="grid-column: 1 / span 5">5</span>
+          <span class="block t-data" style="grid-column: 6 / span 7">7</span>
+        </Cell>
+        <Cell class="demo-row" subgrid aria-hidden="true">
+          <span class="block t-data" style="grid-column: 3 / span 8">2 · 8 · 2</span>
+        </Cell>
+
+        <Cell lg={{ start: 4, span: 9 }} class="grid-intro after-demo">
+          <h3 class="t-data-label sub-inline">Subgrid</h3>
+          <p class="measure">
+            Each row below is its own element, yet its number, title, summary and metric share the
+            page’s columns through <code>grid-template-columns: subgrid</code>. Sample content.
+          </p>
+        </Cell>
+        <Cell as="ol" role="list" subgrid class="entries">
+          <IndexEntry
+            index={1}
+            title="SEC 10-K / 10-Q Analyzer"
+            href="#grid"
+            summary="Pulls XBRL filings from EDGAR and normalizes them into comparable three-statement financials."
+            metric={{ value: '10 yr', label: 'Trend history' }}
+          />
+          <IndexEntry
+            index={2}
+            title="Macro Monitor"
+            href="#grid"
+            summary="Six recession signals, including the Sahm rule, computed from raw FRED series with inspectable thresholds."
+            metric={{ value: '6', label: 'Signals' }}
+          />
+          <IndexEntry
+            index={3}
+            title="Morning dividend and covered call report"
+            href="#grid"
+            summary="A scheduled report on sample dividend stocks and covered call rates, delivered before the open."
+          />
+        </Cell>
+      </div>
+    </section>
+
+    <!-- ====================================================== Components -->
+    <section class="section section-ruled" id="components" aria-labelledby="components-title">
+      <div class="container grid">
+        <Cell lg={{ span: 3 }} class="section-head">
+          <p class="t-label">05</p>
+          <h2 class="t-title" id="components-title">Components</h2>
+          <p class="t-caption">Minimal ink, precise labels. Accent reserved for the single primary action and focus.</p>
+        </Cell>
+
+        <Cell lg={{ start: 4, span: 9 }} class="component-list">
+          <div class="component">
+            <h3 class="t-data-label">Buttons</h3>
+            <div class="row">
+              <Button variant="primary" href="/resume.pdf" download>Download résumé</Button>
+              <Button href="#components" arrow>Read the case study</Button>
+              <Button>Reset inputs</Button>
+            </div>
+          </div>
+
+          <div class="component">
+            <h3 class="t-data-label">Links</h3>
+            <div class="row">
+              <TextLink href="#components">All case studies</TextLink>
+              <TextLink href="https://github.com/KyleWagner4">GitHub</TextLink>
+            </div>
+            <p class="measure">
+              Inline links keep the text color with a hairline underline that <a href="#components">turns accent on hover</a>.
+            </p>
+          </div>
+
+          <div class="component">
+            <h3 class="t-data-label">Rules</h3>
+            <div class="rules">
+              <hr />
+              <hr class="rule-strong" />
+              <div class="rule-total" role="presentation"></div>
+            </div>
+            <p class="t-caption">Hairline structure, strong for subtotals, single over double for totals.</p>
+          </div>
+
+          <div class="component">
+            <h3 class="t-data-label">Key figures</h3>
+            <dl class="stats">
+              <Stat label="Annualized yield" value={14.2} format={{ style: 'percent', decimals: 1, percentUnits: true }} delta={1.8} deltaFormat={{ decimals: 1 }} note="pts vs. last month" />
+              <Stat label="Premium per contract" value={185} format={{ style: 'currency' }} delta={-12} deltaFormat={{ style: 'currency' }} note="vs. prior week" />
+              <Stat label="Breakeven price" value={46.35} format={{ style: 'currency', decimals: 2 }} />
+            </dl>
+            <p class="t-caption">Sample ticker XYZ. Illustrative numbers only.</p>
+          </div>
+
+          <div class="component">
+            <h3 class="t-data-label">Statement table</h3>
+            <FinancialTable
+              caption="Covered call income, sample portfolio"
+              unit="USD · illustrative"
+              columns={['Q1', 'Q2', 'Q3', 'Q4', 'FY']}
+              current={4}
+              rows={sampleRows}
+              source="Sample data for demonstration; ticker XYZ is fictional."
+            />
+          </div>
+
+          <div class="component">
+            <h3 class="t-data-label">Inputs</h3>
+            <div class="fields">
+              <NumberField id="sg-price" label="Share price" prefix="$" value="48.20" />
+              <NumberField id="sg-strike" label="Strike" prefix="$" value="50.00" />
+              <NumberField id="sg-premium" label="Premium" prefix="$" value="1.85" hint="Per share, at the bid." />
+              <NumberField id="sg-days" label="Days to expiry" suffix="days" value="30" />
+            </div>
+          </div>
+        </Cell>
+      </div>
+    </section>
+
+    <!-- ========================================================== Motion -->
+    <section class="section section-ruled" id="motion" aria-labelledby="motion-title">
+      <div class="container grid">
+        <Cell lg={{ span: 3 }} class="section-head">
+          <p class="t-label">06</p>
+          <h2 class="t-title" id="motion-title">Motion</h2>
+          <p class="t-caption">
+            Fast and physical. With reduced motion, movement is removed and only color fades remain.
+          </p>
+        </Cell>
+        <Cell lg={{ start: 4, span: 9 }} class="component-list">
+          <div class="component">
+            <h3 class="t-data-label">Easing</h3>
+            <ul role="list" class="easings">
+              {
+                easings.map((e) => (
+                  <li>
+                    <svg viewBox="-1 -1 50 50" class="curve" aria-hidden="true">
+                      <path class="axis" d="M0 0 V48 H48" />
+                      <path class="line" d={curvePath(e.curve)} />
+                    </svg>
+                    <code>--{e.token}</code>
+                    <span class="t-caption">{e.use}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+
+          <div class="component">
+            <h3 class="t-data-label">Duration</h3>
+            <table class="spaces t-data">
+              <caption class="visually-hidden">Durations</caption>
+              <tbody>
+                {
+                  durations.map((d) => (
+                    <tr>
+                      <th scope="row">
+                        <code>--{d.token}</code>
+                      </th>
+                      <td class="num">{d.ms} ms</td>
+                      <td class="use">{d.use}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="component">
+            <h3 class="t-data-label">Scroll reveal</h3>
+            <p class="measure">
+              <code>.reveal</code> fades content up as it enters the viewport, driven
+              by <code>animation-timeline: view()</code> in CSS rather than scroll listeners.
+            </p>
+            <div class="reveal-demo">
+              {[1, 2, 3].map((n) => <div class="reveal reveal-card t-data">Reveal {n}</div>)}
+            </div>
+          </div>
+        </Cell>
+      </div>
+    </section>
+  </main>
+
+  <div class="grid-overlay" aria-hidden="true">
+    <div class="container grid">
+      {Array.from({ length: 12 }, () => <span />)}
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-grid-toggle]');
+  toggle?.addEventListener('click', () => {
+    const on = toggle.getAttribute('aria-pressed') !== 'true';
+    toggle.setAttribute('aria-pressed', String(on));
+    document.documentElement.toggleAttribute('data-grid-overlay', on);
+  });
+</script>
+
+<style>
+  /* ------------------------------------------------------------ Masthead */
+  .masthead {
+    padding-block: var(--space-16) var(--space-12);
+  }
+
+  .masthead-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-content: start;
+    margin-block-start: var(--space-8);
+  }
+
+  @media (min-width: 64rem) {
+    .masthead-tools {
+      display: grid;
+      justify-items: end;
+      margin-block-start: 0;
+    }
+  }
+
+  .overlay-toggle {
+    min-block-size: 2.75rem;
+    padding-inline: var(--space-3);
+    border: var(--hairline) solid var(--rule-control);
+    border-radius: var(--radius);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
+  }
+
+  .overlay-toggle:hover {
+    border-color: var(--ink);
+  }
+
+  .overlay-toggle[aria-pressed='true'] {
+    background: var(--accent-wash);
+    border-color: var(--accent);
+  }
+
+  .toc {
+    margin-block-start: var(--space-12);
+  }
+
+  .toc-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-8);
+    padding-block-start: var(--space-3);
+    border-block-start: var(--hairline) solid var(--ink);
+  }
+
+  .toc-list a {
+    text-decoration: none;
+  }
+
+  .toc-list a:hover {
+    color: var(--accent);
+  }
+
+  .toc-num {
+    margin-inline-end: var(--space-2);
+    color: var(--ink-3);
+  }
+
+  /* ------------------------------------------------------ Section heads */
+  .section-head {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    margin-block-end: var(--space-12);
+  }
+
+  /* Sticky only where the head shares its row with one tall content cell;
+     with full-width rows below (the Grid section) it would slide over them. */
+  @media (min-width: 64rem) {
+    .section-head:not(.static) {
+      position: sticky;
+      inset-block-start: var(--space-8);
+    }
+
+    .section-head {
+      align-self: start;
+      margin-block-end: 0;
+      padding-inline-end: var(--space-4);
+    }
+  }
+
+  section {
+    scroll-margin-block-start: var(--space-4);
+  }
+
+  .sub {
+    grid-column: 1 / -1;
+    padding-block: var(--space-12) var(--space-4);
+    border-block-end: var(--hairline) solid var(--ink);
+  }
+
+  .sub:first-child {
+    padding-block-start: 0;
+  }
+
+  /* ------------------------------------------------------------- Type */
+  .specimens {
+    align-content: start;
+  }
+
+  .specimen {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: var(--space-2);
+    padding-block: var(--space-6);
+    border-block-end: var(--hairline) solid var(--rule);
+  }
+
+  .specimen > * {
+    grid-column: 1 / -1;
+  }
+
+  .meta {
+    color: var(--ink);
+  }
+
+  .meta span {
+    color: var(--ink-3);
+  }
+
+  @media (min-width: 48rem) {
+    .specimen > .meta {
+      grid-column: 1 / span 2;
+      padding-block-start: 0.35em;
+    }
+
+    .specimen > :not(.meta) {
+      grid-column: 3 / -1;
+    }
+  }
+
+  .wide {
+    grid-column: 1 / -1;
+    padding-block-start: var(--space-6);
+  }
+
+  .scale,
+  .spaces {
+    inline-size: 100%;
+  }
+
+  .scale th,
+  .scale td,
+  .spaces th,
+  .spaces td {
+    padding-block: var(--space-2);
+    padding-inline-end: var(--space-4);
+    text-align: start;
+    font-weight: inherit;
+    vertical-align: baseline;
+    border-block-end: var(--hairline) solid var(--rule);
+  }
+
+  .scale thead th,
+  .spaces thead th {
+    border-block-end-color: var(--ink);
+  }
+
+  :is(.scale, .spaces) :is(th, td).num {
+    text-align: end;
+  }
+
+  .use {
+    color: var(--ink-2);
+  }
+
+  .sample {
+    font-family: var(--font-serif);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .opsz {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  .opsz figure {
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .opsz figure p {
+    font-size: var(--step-5);
+    line-height: 1;
+  }
+
+  .opsz-note {
+    grid-column: 1 / -1;
+  }
+
+  .figures {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, max-content));
+    gap: var(--space-4) clamp(var(--space-6), 6vw, var(--space-16));
+  }
+
+  .figures figure {
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .nums {
+    font-size: var(--step-2);
+    line-height: 1.3;
+    text-align: end;
+  }
+
+  .figures .t-caption {
+    grid-column: 1 / -1;
+    max-inline-size: var(--measure);
+  }
+
+  /* ------------------------------------------------------------ Color */
+  .palettes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--grid-gutter);
+  }
+
+  @media (min-width: 64rem) {
+    .palettes {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .palette {
+    display: grid;
+    gap: var(--space-6);
+    align-content: start;
+    padding: var(--space-6);
+    background: var(--paper);
+    border: var(--hairline) solid var(--rule);
+  }
+
+  .swatches {
+    display: grid;
+    gap: 0;
+  }
+
+  .swatch {
+    display: grid;
+    grid-template-columns: var(--space-8) minmax(0, 1fr);
+    column-gap: var(--space-3);
+    align-items: baseline;
+    padding-block: var(--space-2);
+    border-block-end: var(--hairline) solid var(--rule);
+  }
+
+  .chip {
+    grid-row: span 2;
+    align-self: center;
+    inline-size: var(--space-8);
+    block-size: var(--space-8);
+    border-radius: var(--radius);
+    box-shadow: inset 0 0 0 var(--hairline) color-mix(in oklab, var(--ink) 18%, transparent);
+  }
+
+  .swatch code {
+    font-size: var(--step--1);
+  }
+
+  .sample-text {
+    font-size: var(--step--1);
+  }
+
+  /* ---------------------------------------------------------- Spacing */
+  .bar {
+    display: block;
+    block-size: var(--space-2);
+    background: var(--ink);
+  }
+
+  .spaces-note {
+    padding-block-start: var(--space-4);
+  }
+
+  /* ------------------------------------------------------------- Grid */
+  .grid-intro {
+    margin-block-end: var(--space-8);
+  }
+
+  .sub-inline {
+    margin-block-end: var(--space-3);
+  }
+
+  .demo-row {
+    row-gap: 0;
+    margin-block-end: var(--space-2);
+  }
+
+  .col,
+  .block {
+    display: grid;
+    place-items: center;
+    block-size: var(--space-12);
+    color: var(--ink-2);
+    background: var(--paper-sunken);
+    border-block-start: var(--hairline) solid var(--rule-strong);
+  }
+
+  /* Phone columns are about 14px wide; keep two-digit labels inside. */
+  .col {
+    font-size: var(--step--2);
+    letter-spacing: -0.02em;
+  }
+
+  .after-demo {
+    margin-block-start: var(--space-16);
+  }
+
+  .entries {
+    margin-block-start: var(--space-4);
+    padding: 0;
+    border-block-end: var(--hairline) solid var(--rule);
+  }
+
+  /* ------------------------------------------------------- Components */
+  /* An explicit minmax(0, 1fr) track: an implicit auto track would grow
+     to the statement table's minimum width instead of letting it scroll. */
+  .component-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-16);
+  }
+
+  .component {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  .component > h3 {
+    padding-block-end: var(--space-3);
+    border-block-end: var(--hairline) solid var(--ink);
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-6);
+    align-items: center;
+  }
+
+  .rules {
+    display: grid;
+    gap: var(--space-6);
+    padding-block: var(--space-2);
+  }
+
+  .rule-strong {
+    border-block-start-color: var(--rule-strong);
+  }
+
+  .rule-total {
+    block-size: 0;
+    border-block-start: var(--hairline) solid var(--ink);
+    border-block-end: 3px double var(--ink);
+    padding-block-start: var(--space-4);
+  }
+
+  .stats {
+    display: grid;
+    gap: var(--space-8) var(--grid-gutter);
+  }
+
+  @media (min-width: 48rem) {
+    .stats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .fields {
+    display: grid;
+    gap: var(--space-6) var(--grid-gutter);
+  }
+
+  @media (min-width: 48rem) {
+    .fields {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 80rem) {
+    .fields {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* ----------------------------------------------------------- Motion */
+  .easings {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 48rem) {
+    .easings {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .easings li {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .curve {
+    inline-size: var(--space-24);
+    overflow: visible;
+    margin-block-end: var(--space-2);
+  }
+
+  .curve .axis {
+    fill: none;
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .curve .line {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .reveal-demo {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--grid-gutter);
+  }
+
+  .reveal-card {
+    display: grid;
+    place-items: center;
+    block-size: var(--space-32);
+    background: var(--paper-sunken);
+    border-block-start: var(--hairline) solid var(--rule-strong);
+    color: var(--ink-2);
+  }
+
+  /* ---------------------------------------------------------- Overlay */
+  .grid-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    display: none;
+  }
+
+  :global(html[data-grid-overlay]) .grid-overlay {
+    display: block;
+  }
+
+  .grid-overlay .grid {
+    block-size: 100%;
+  }
+
+  .grid-overlay span {
+    background: color-mix(in oklab, var(--accent) 7%, transparent);
+    border-inline: var(--hairline) solid color-mix(in oklab, var(--accent) 30%, transparent);
+  }
+</style>
