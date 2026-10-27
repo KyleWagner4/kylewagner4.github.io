@@ -40,6 +40,7 @@ const hintId = hint ? `${id}-hint` : undefined;
   .field {
     display: grid;
     gap: var(--space-2);
+    min-inline-size: 0;
   }
 
   .control {
@@ -68,8 +69,11 @@ const hintId = hint ? `${id}-hint` : undefined;
     box-shadow: 0 0 0 1px var(--accent);
   }
 
+  /* Inputs have an intrinsic width of about 20 characters; let the
+     control decide instead. */
   input {
     flex: 1;
+    inline-size: 100%;
     min-inline-size: 0;
     padding: 0;
     border: 0;

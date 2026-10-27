@@ -11,18 +11,20 @@ interface Props {
   href: string;
   summary: string;
   metric?: { value: string; label: string };
+  headingLevel?: 2 | 3 | 4;
 }
 
-const { index, title, href, summary, metric } = Astro.props;
+const { index, title, href, summary, metric, headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as const;
 ---
 
 <li class="entry cell subgrid">
   <span class="number t-data" aria-hidden="true">{String(index).padStart(2, '0')}</span>
-  <h3 class="title t-subtitle">
+  <Heading class="title t-subtitle">
     <a href={href}>
       {title}<span class="arrow" aria-hidden="true">&nbsp;→</span>
     </a>
-  </h3>
+  </Heading>
   <p class="summary muted">{summary}</p>
   {
     metric && (
@@ -42,7 +44,9 @@ const { index, title, href, summary, metric } = Astro.props;
     border-block-start: var(--hairline) solid var(--rule);
   }
 
-  .entry > * {
+  /* Zero specificity, so the placements below win over this default
+     (Astro's scoping attributes would otherwise outweigh them). */
+  :where(.entry > *) {
     grid-column: 1 / -1;
   }
 
@@ -97,41 +101,40 @@ const { index, title, href, summary, metric } = Astro.props;
     font-size: var(--step-3);
   }
 
+  /* Rows are explicit: mixing auto and fixed placement lets the cursor
+     push the number and title below the summary. */
   @media (min-width: 48rem) {
     .number {
-      grid-column: 1 / span 1;
+      grid-area: 1 / 1 / auto / span 1;
     }
 
     .title {
-      grid-column: 2 / span 7;
+      grid-area: 1 / 2 / auto / span 7;
     }
 
     .summary {
-      grid-column: 2 / span 7;
+      grid-area: 2 / 2 / auto / span 7;
     }
 
     .metric {
-      grid-column: 10 / span 3;
-      grid-row: 1 / span 2;
+      grid-area: 1 / 10 / span 2 / span 3;
+      justify-items: end;
+      text-align: end;
     }
   }
 
   @media (min-width: 64rem) {
     .title {
-      grid-column: 2 / span 4;
+      grid-area: 1 / 2 / auto / span 4;
     }
 
     .summary {
-      grid-column: 6 / span 5;
-      grid-row: 1;
+      grid-area: 1 / 6 / auto / span 5;
       padding-block-start: 0.2em;
     }
 
     .metric {
-      grid-column: 11 / span 2;
-      grid-row: 1;
-      justify-items: end;
-      text-align: end;
+      grid-area: 1 / 11 / auto / span 2;
     }
   }
 </style>
