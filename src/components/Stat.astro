@@ -1,0 +1,63 @@
+---
+/*
+  A key figure with its label. Place inside <dl class="stats">.
+  A delta carries its own sign, so color is never the only cue.
+*/
+import { formatDelta, formatFigure, type FigureOptions } from '../lib/format';
+
+interface Props {
+  label: string;
+  value: number;
+  format?: FigureOptions;
+  delta?: number;
+  deltaFormat?: FigureOptions;
+  note?: string;
+}
+
+const { label, value, format = {}, delta, deltaFormat = format, note } = Astro.props;
+const direction = delta === undefined ? undefined : delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
+---
+
+<div class="stat">
+  <dt class="t-data-label">{label}</dt>
+  <dd class="t-figure value">{formatFigure(value, format)}</dd>
+  {
+    delta !== undefined && (
+      <dd class="t-data delta" data-direction={direction}>
+        {formatDelta(delta, deltaFormat)}
+        {note && <span class="note">{note}</span>}
+      </dd>
+    )
+  }
+</div>
+
+<style>
+  .stat {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    padding-block-start: var(--space-3);
+    border-block-start: var(--hairline) solid var(--rule-strong);
+  }
+
+  .value {
+    color: var(--ink);
+  }
+
+  .delta {
+    color: var(--ink-2);
+  }
+
+  .delta[data-direction='up'] {
+    color: var(--positive);
+  }
+
+  .delta[data-direction='down'] {
+    color: var(--negative);
+  }
+
+  .note {
+    margin-inline-start: var(--space-1);
+    color: var(--ink-3);
+  }
+</style>

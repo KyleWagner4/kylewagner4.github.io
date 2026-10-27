@@ -1,0 +1,186 @@
+---
+/*
+  Financial-statement table: right-aligned tabular figures, negatives in
+  parentheses (with a spoken minus for screen readers), a hidden closing
+  parenthesis on positives so digits stay aligned, a hairline over
+  subtotals, and a rule plus double rule on totals.
+*/
+import { formatStatement, type FigureOptions } from '../lib/format';
+
+export interface StatementRow {
+  label: string;
+  values?: (number | null)[];
+  kind?: 'line' | 'section' | 'subtotal' | 'total';
+  indent?: boolean;
+}
+
+interface Props {
+  caption: string;
+  unit?: string;
+  columns: string[];
+  rows: StatementRow[];
+  format?: FigureOptions;
+  /** Index of the column to emphasize, usually the latest period. */
+  current?: number;
+  source?: string;
+}
+
+const { caption, unit, columns, rows, format = {}, current, source } = Astro.props;
+---
+
+<figure class="statement">
+  <div class="scroller" role="region" aria-label={caption} tabindex="0">
+    <table>
+      <caption>
+        <span class="t-subtitle title">{caption}</span>
+        {unit && <span class="t-caption unit">{unit}</span>}
+      </caption>
+      <thead>
+        <tr>
+          <td></td>
+          {
+            columns.map((column, i) => (
+              <th scope="col" class:list={['t-data-label', { current: i === current }]}>
+                {column}
+              </th>
+            ))
+          }
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row) =>
+            row.kind === 'section' ? (
+              <tr class="section">
+                <th scope="colgroup" colspan={columns.length + 1}>
+                  {row.label}
+                </th>
+              </tr>
+            ) : (
+              <tr class={row.kind ?? 'line'}>
+                <th scope="row" class:list={{ indent: row.indent }}>
+                  {row.label}
+                </th>
+                {(row.values ?? []).map((value, i) => {
+                  const figure = value === null ? null : formatStatement(value, format);
+                  return (
+                    <td class:list={{ current: i === current }}>
+                      {figure === null ? (
+                        <>
+                          <span aria-hidden="true">–</span>
+                          <span class="visually-hidden">nil</span>
+                          <span class="paren" aria-hidden="true">)</span>
+                        </>
+                      ) : figure.negative ? (
+                        <>
+                          <span aria-hidden="true">{figure.text}</span>
+                          <span class="visually-hidden">{figure.plain}</span>
+                        </>
+                      ) : (
+                        <>
+                          {figure.text}
+                          <span class="paren" aria-hidden="true">)</span>
+                        </>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ),
+          )
+        }
+      </tbody>
+    </table>
+  </div>
+  {source && <figcaption class="t-caption source">{source}</figcaption>}
+</figure>
+
+<style>
+  .statement {
+    margin: 0;
+  }
+
+  .scroller {
+    overflow-x: auto;
+  }
+
+  table {
+    inline-size: 100%;
+    min-inline-size: 28rem;
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: var(--weight-ui);
+    line-height: var(--leading-caption);
+  }
+
+  caption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-4);
+    padding-block-end: var(--space-3);
+    text-align: start;
+  }
+
+  th,
+  td {
+    padding-block: var(--space-2);
+    vertical-align: baseline;
+  }
+
+  thead th {
+    padding-block-start: 0;
+    text-align: end;
+    border-block-end: var(--hairline) solid var(--ink);
+  }
+
+  thead td {
+    border-block-end: var(--hairline) solid var(--ink);
+  }
+
+  tbody th {
+    font-weight: inherit;
+    text-align: start;
+    padding-inline-end: var(--space-4);
+  }
+
+  td {
+    text-align: end;
+    white-space: nowrap;
+    padding-inline-start: var(--space-6);
+  }
+
+  .current {
+    font-weight: var(--weight-ui-strong);
+    color: var(--ink);
+  }
+
+  .paren {
+    visibility: hidden;
+  }
+
+  .indent {
+    padding-inline-start: var(--space-4);
+  }
+
+  .section th {
+    padding-block-start: var(--space-4);
+    font-weight: var(--weight-ui-strong);
+    color: var(--ink-2);
+  }
+
+  .subtotal > * {
+    border-block-start: var(--hairline) solid var(--rule-strong);
+  }
+
+  .total > * {
+    font-weight: var(--weight-ui-strong);
+    border-block-start: var(--hairline) solid var(--ink);
+    border-block-end: 3px double var(--ink);
+  }
+
+  .source {
+    padding-block-start: var(--space-3);
+  }
+</style>

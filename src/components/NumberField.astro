@@ -1,0 +1,92 @@
+---
+/*
+  Numeric input for the calculator. Text input with a decimal keypad
+  rather than type="number", which brings spinners and locale quirks.
+*/
+interface Props {
+  id: string;
+  label: string;
+  value?: string;
+  prefix?: string;
+  suffix?: string;
+  hint?: string;
+  name?: string;
+}
+
+const { id, label, value, prefix, suffix, hint, name = id } = Astro.props;
+const hintId = hint ? `${id}-hint` : undefined;
+---
+
+<div class="field">
+  <label class="t-data-label" for={id}>{label}</label>
+  <div class="control">
+    {prefix && <span class="affix" aria-hidden="true">{prefix}</span>}
+    <input
+      id={id}
+      name={name}
+      type="text"
+      inputmode="decimal"
+      autocomplete="off"
+      spellcheck="false"
+      value={value}
+      aria-describedby={hintId}
+    />
+    {suffix && <span class="affix" aria-hidden="true">{suffix}</span>}
+  </div>
+  {hint && <p class="t-caption" id={hintId}>{hint}</p>}
+</div>
+
+<style>
+  .field {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .control {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-3);
+    border: var(--hairline) solid var(--rule-control);
+    border-radius: var(--radius);
+    background: var(--paper-raised);
+    font-family: var(--font-sans);
+    font-size: var(--step-1);
+    font-variant-numeric: lining-nums tabular-nums;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out);
+  }
+
+  .control:hover {
+    border-color: var(--ink-3);
+  }
+
+  /* The ring sits on the whole control so prefix and suffix are included. */
+  .control:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  input {
+    flex: 1;
+    min-inline-size: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-weight: var(--weight-ui);
+    text-align: end;
+    font-variant-numeric: inherit;
+    caret-color: var(--accent);
+  }
+
+  input:focus-visible {
+    outline: none;
+    animation: none;
+  }
+
+  .affix {
+    color: var(--ink-3);
+    font-size: var(--step-0);
+  }
+</style>

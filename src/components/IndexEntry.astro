@@ -1,0 +1,137 @@
+---
+/*
+  One row of an index (case studies, writing). Place in an
+  <ol class="grid" role="list">; the row is a subgrid, so the number,
+  title, summary and metric columns line up across rows and with the page.
+  The whole row is clickable through the title link.
+*/
+interface Props {
+  index: number;
+  title: string;
+  href: string;
+  summary: string;
+  metric?: { value: string; label: string };
+}
+
+const { index, title, href, summary, metric } = Astro.props;
+---
+
+<li class="entry cell subgrid">
+  <span class="number t-data" aria-hidden="true">{String(index).padStart(2, '0')}</span>
+  <h3 class="title t-subtitle">
+    <a href={href}>
+      {title}<span class="arrow" aria-hidden="true">&nbsp;→</span>
+    </a>
+  </h3>
+  <p class="summary muted">{summary}</p>
+  {
+    metric && (
+      <p class="metric">
+        <span class="t-figure figure">{metric.value}</span>
+        <span class="t-data-label">{metric.label}</span>
+      </p>
+    )
+  }
+</li>
+
+<style>
+  .entry {
+    position: relative;
+    row-gap: var(--space-3);
+    padding-block: var(--space-6) var(--space-8);
+    border-block-start: var(--hairline) solid var(--rule);
+  }
+
+  .entry > * {
+    grid-column: 1 / -1;
+  }
+
+  .number {
+    color: var(--ink-3);
+    padding-block-start: 0.3em;
+  }
+
+  .title a {
+    text-decoration: none;
+  }
+
+  /* Stretch the link over the row. */
+  .title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .title a:focus-visible {
+    outline: none;
+  }
+
+  .title a:focus-visible::after {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  .arrow {
+    display: inline-block;
+    color: var(--ink-3);
+    transition:
+      translate var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  .entry:hover .title a {
+    color: var(--accent);
+  }
+
+  .entry:hover .arrow {
+    color: var(--accent);
+    translate: var(--nudge) 0;
+  }
+
+  .metric {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .figure {
+    font-size: var(--step-3);
+  }
+
+  @media (min-width: 48rem) {
+    .number {
+      grid-column: 1 / span 1;
+    }
+
+    .title {
+      grid-column: 2 / span 7;
+    }
+
+    .summary {
+      grid-column: 2 / span 7;
+    }
+
+    .metric {
+      grid-column: 10 / span 3;
+      grid-row: 1 / span 2;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .title {
+      grid-column: 2 / span 4;
+    }
+
+    .summary {
+      grid-column: 6 / span 5;
+      grid-row: 1;
+      padding-block-start: 0.2em;
+    }
+
+    .metric {
+      grid-column: 11 / span 2;
+      grid-row: 1;
+      justify-items: end;
+      text-align: end;
+    }
+  }
+</style>
