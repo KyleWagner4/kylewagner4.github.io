@@ -1,0 +1,49 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import Cell from '../../components/Cell.astro';
+import TextLink from '../../components/TextLink.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('work');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+}
+
+const { entry } = Astro.props;
+const { title, summary, order, draft } = entry.data;
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={`${title} · Kyle Wagner`} description={summary} noindex={draft}>
+  <SiteHeader />
+  <main>
+    <article class="section section-ruled">
+      <div class="container grid">
+        <Cell lg={{ span: 3 }} class="head">
+          <p class="t-label">Case study {String(order).padStart(2, '0')}</p>
+        </Cell>
+        <Cell lg={{ start: 4, span: 8 }} class="stack" style="--stack-space: var(--space-6)">
+          <h1 class="t-headline">{title}</h1>
+          <p class="t-lede measure">{summary}</p>
+          <div class="t-body measure stack">
+            <Content />
+          </div>
+          <p>
+            <TextLink href="/#work">All case studies</TextLink>
+          </p>
+        </Cell>
+      </div>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  .head {
+    margin-block-end: var(--space-6);
+  }
+</style>
