@@ -2,8 +2,8 @@
 /*
   Site masthead: name, section links and the theme control, on the grid.
   The section links point at the home page, so they work from any page.
-  Below desktop they drop out; the home page is short and reads top to
-  bottom.
+  From 48rem they sit beside the name; on phones they take a second row
+  under the name and theme control, starting on column 1.
 */
 import Cell from './Cell.astro';
 import ThemeToggle from './ThemeToggle.astro';
@@ -17,10 +17,10 @@ const links = [
 
 <header class="site-header">
   <div class="container grid">
-    <Cell span={6} lg={{ span: 3 }} class="name">
+    <Cell span={6} md={{ span: 3 }} class="name">
       <a href="/" class="t-label">Kyle Wagner</a>
     </Cell>
-    <Cell as="nav" aria-label="Site" lg={{ start: 4, span: 6 }} class="nav">
+    <Cell as="nav" aria-label="Site" md={{ start: 4, span: 6 }} class="nav">
       <ul role="list">
         {
           links.map((link) => (
@@ -33,7 +33,7 @@ const links = [
         }
       </ul>
     </Cell>
-    <Cell span={6} lg={{ start: 10, span: 3 }} class="tools">
+    <Cell span={6} md={{ start: 10, span: 3 }} class="tools">
       <ThemeToggle />
     </Cell>
   </div>
@@ -53,19 +53,36 @@ const links = [
     text-decoration: none;
   }
 
+  /* An explicit row, so the name and theme control still pair up on
+     the first one. */
   .nav {
-    display: none;
+    grid-row: 2;
+    margin-block-start: var(--space-3);
   }
 
   .nav ul {
     display: flex;
-    gap: var(--space-8);
+    gap: var(--space-6);
   }
 
+  /* Padding gives each link a taller target without loosening the row. */
   .nav a {
+    display: inline-block;
+    padding-block: var(--space-2);
     color: var(--ink-2);
     text-decoration: none;
     transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  @media (min-width: 48rem) {
+    .nav {
+      grid-row: auto;
+      margin-block-start: 0;
+    }
+
+    .nav ul {
+      gap: var(--space-8);
+    }
   }
 
   .name a:hover,
@@ -76,11 +93,5 @@ const links = [
   .tools {
     display: flex;
     justify-content: end;
-  }
-
-  @media (min-width: 64rem) {
-    .nav {
-      display: block;
-    }
   }
 </style>
