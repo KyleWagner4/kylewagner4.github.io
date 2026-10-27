@@ -102,7 +102,10 @@ const { caption, unit, columns, rows, format = {}, current, source } = Astro.pro
     margin: 0;
   }
 
+  /* relative makes this the containing block for the visually hidden
+     spans in the cells; otherwise they escape the clip and widen the page. */
   .scroller {
+    position: relative;
     overflow-x: auto;
   }
 
