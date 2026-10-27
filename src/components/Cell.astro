@@ -17,10 +17,11 @@ interface Props extends Placement {
   lg?: Placement;
   subgrid?: boolean;
   class?: string;
+  style?: string;
   [attr: string]: unknown;
 }
 
-const { as: Tag = 'div', span, start, md, lg, subgrid = false, class: className, ...attrs } = Astro.props;
+const { as: Tag = 'div', span, start, md, lg, subgrid = false, class: className, style: extraStyle, ...attrs } = Astro.props;
 
 const vars: Record<string, number | undefined> = {
   '--span': span,
@@ -30,9 +31,13 @@ const vars: Record<string, number | undefined> = {
   '--span-lg': lg?.span,
   '--start-lg': lg?.start,
 };
-const style = Object.entries(vars)
-  .filter(([, value]) => value !== undefined)
-  .map(([name, value]) => `${name}: ${value}`)
+const style = [
+  ...Object.entries(vars)
+    .filter(([, value]) => value !== undefined)
+    .map(([name, value]) => `${name}: ${value}`),
+  extraStyle,
+]
+  .filter(Boolean)
   .join('; ');
 ---
 

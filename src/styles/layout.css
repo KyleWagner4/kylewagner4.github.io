@@ -10,11 +10,11 @@
 */
 
 @layer layout {
+  /* Margins rather than padding, so a border on the container spans
+     exactly the columns. */
   .container {
-    inline-size: 100%;
-    max-inline-size: calc(var(--grid-max) + 2 * var(--grid-margin));
+    inline-size: min(100% - 2 * var(--grid-margin), var(--grid-max));
     margin-inline: auto;
-    padding-inline: var(--grid-margin);
   }
 
   .grid {
@@ -23,8 +23,12 @@
     column-gap: var(--grid-gutter);
   }
 
+  /* min-inline-size: 0 keeps wide content (a table, a long word) from
+     stretching the shared column tracks; such content scrolls or wraps
+     inside its cell instead. */
   .cell {
     grid-column: var(--start, auto) / span var(--span, 12);
+    min-inline-size: 0;
   }
 
   @media (min-width: 48rem) {
@@ -48,12 +52,14 @@
     grid-template-columns: subgrid;
   }
 
-  .section {
+  /* Sections pad their container, so a ruled section's hairline sits at
+     the top edge and spans only the columns. */
+  .section > .container {
     padding-block: var(--space-section);
   }
 
   /* A section that opens on a hairline, like a new statement page. */
-  .section-ruled {
+  .section-ruled > .container {
     border-block-start: var(--hairline) solid var(--rule);
   }
 
