@@ -1,16 +1,531 @@
 ---
-// Placeholder until the real home page is built. See /styleguide.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import Cell from '../components/Cell.astro';
+import Button from '../components/Button.astro';
+import TextLink from '../components/TextLink.astro';
+import IndexEntry from '../components/IndexEntry.astro';
+
+const caseStudies = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+
+const projects = [
+  {
+    kind: 'Live tool',
+    title: 'Portfolio Analytics Dashboard',
+    href: 'https://kyle-portfolio-dashboard.streamlit.app',
+    summary:
+      'A live portfolio tracker on Streamlit and Supabase: benchmarks across nine indices, Monte Carlo simulation over 1,000 paths, efficient frontier optimization and one-click PDF reports.',
+    stack: ['Python', 'Streamlit', 'Supabase', 'Plotly'],
+  },
+  {
+    kind: 'Research',
+    title: '401(k) revenue-sharing analysis',
+    summary:
+      'A plan-fund panel linking DOL Form 5500 filings to CRSP fund data across 828 retirement plans. Revenue-sharing funds proved significantly less likely to be dropped from plan menus.',
+    stack: ['Python', 'Stata', 'CRSP', 'Panel regression'],
+  },
+];
+
+// The statement: dated lines grouped like sections of an annual report.
+// figure is an optional value for the right-hand column.
+type Line = {
+  dates?: string;
+  title: string;
+  org: string;
+  detail: string;
+  figure?: { value: string; label: string };
+};
+
+const statement: { heading: string; lines: Line[] }[] = [
+  {
+    heading: 'Work',
+    lines: [
+      {
+        // Placeholder: the firm is never named on the site.
+        dates: '2026 – Present',
+        title: 'Role title',
+        org: 'Wealth management firm',
+        detail: 'Placeholder: one or two lines on the work, without naming the firm or any clients.',
+      },
+      {
+        dates: 'Jun 2025 – 2026',
+        title: 'Research Associate',
+        org: 'UC San Diego, Department of Economics',
+        detail:
+          'Selected from a competitive cohort to work one-on-one with a PhD researcher on institutional investors and 401(k) revenue-sharing. Rebuilt a seven-step Stata workflow in Python, verified variable by variable, and replicated logit regressions with high-dimensional fixed effects.',
+        figure: { value: '5M+', label: 'Observations' },
+      },
+    ],
+  },
+  {
+    heading: 'Education',
+    lines: [
+      {
+        dates: '2026',
+        title: 'B.S. Business Economics',
+        org: 'UC San Diego',
+        detail: 'Provost Honors.',
+        figure: { value: '3.8', label: 'GPA' },
+      },
+      {
+        title: 'A.A.-T. Economics',
+        org: 'Moorpark College',
+        detail: 'Dean’s List in all four terms.',
+        figure: { value: '4 of 4', label: 'Dean’s List terms' },
+      },
+    ],
+  },
+];
+
+const contact = [
+  { label: 'Email', text: 'wagnerkc03@yahoo.com', href: 'mailto:wagnerkc03@yahoo.com' },
+  { label: 'LinkedIn', text: 'kyle-wagner-01973a365', href: 'https://www.linkedin.com/in/kyle-wagner-01973a365/' },
+  { label: 'GitHub', text: 'KyleWagner4', href: 'https://github.com/KyleWagner4' },
+  { label: 'Résumé', text: 'Download PDF', href: '/resume.pdf', download: true },
+];
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex" />
-    <title>Kyle Wagner</title>
-  </head>
-  <body>
-    <p>Redesign in progress. <a href="/styleguide">Style guide</a></p>
-  </body>
-</html>
+<BaseLayout
+  title="Kyle Wagner · Financial models and the tools that automate them"
+  description="Kyle Wagner builds financial models and the tools that automate them. FP&A and financial analysis, Los Angeles."
+>
+  <SiteHeader />
+
+  <main>
+    <!-- ============================================================ Hero -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container grid">
+        <Cell class="hero-label">
+          <p class="t-label">FP&amp;A and financial analysis · Los Angeles</p>
+        </Cell>
+        <Cell lg={{ span: 10 }}>
+          <h1 class="t-display" id="hero-title">
+            I build financial models and the tools that automate&nbsp;them.
+          </h1>
+        </Cell>
+        <Cell lg={{ span: 3 }} class="hero-meta">
+          <p class="t-caption">
+            B.S. Business Economics,<br />UC San Diego, 2026
+          </p>
+        </Cell>
+        <Cell lg={{ start: 4, span: 6 }} class="hero-intro">
+          <p class="t-lede">
+            I take raw filings and economic data, build the model, then automate it so the numbers
+            are current before anyone&nbsp;asks.
+          </p>
+          <div class="actions">
+            <Button variant="primary" href="#work" arrow>Read the case studies</Button>
+            <Button href="/resume.pdf" download>Download résumé</Button>
+          </div>
+        </Cell>
+      </div>
+    </section>
+
+    <!-- ==================================================== Selected work -->
+    <section class="section section-ruled" id="work" aria-labelledby="work-title">
+      <div class="container grid">
+        <Cell lg={{ span: 3 }} class="section-head">
+          <p class="t-label">01</p>
+          <h2 class="t-title" id="work-title">Selected work</h2>
+        </Cell>
+        <Cell lg={{ start: 4, span: 6 }} class="section-intro">
+          <p class="t-caption measure">
+            Three case studies, each told the same way: the problem, what I built, how it works and
+            what it changed.
+          </p>
+        </Cell>
+
+        <Cell as="ol" role="list" subgrid class="entries">
+          {
+            caseStudies.map((entry) => (
+              <IndexEntry
+                index={entry.data.order}
+                title={entry.data.title}
+                href={`/work/${entry.id}/`}
+                summary={entry.data.summary}
+                metric={entry.data.metric}
+              />
+            ))
+          }
+        </Cell>
+
+        <Cell subgrid class="projects">
+          <h3 class="t-label projects-label">Also built</h3>
+          {
+            projects.map((p) => (
+              <article class="project rule-draw">
+                <p class="t-data-label">{p.kind}</p>
+                <h4 class="t-subtitle">
+                  {p.href ? (
+                    <a href={p.href} rel="noopener">
+                      {p.title}
+                      <span class="arrow" aria-hidden="true">&nbsp;↗</span>
+                      <span class="visually-hidden">(external site)</span>
+                    </a>
+                  ) : (
+                    p.title
+                  )}
+                </h4>
+                <p class="t-caption">{p.summary}</p>
+                <p class="t-data stack-list">{p.stack.join(' · ')}</p>
+              </article>
+            ))
+          }
+        </Cell>
+      </div>
+    </section>
+
+    <!-- ====================================================== Experience -->
+    <section class="section section-ruled" id="experience" aria-labelledby="experience-title">
+      <div class="container grid">
+        <Cell lg={{ span: 3 }} class="section-head">
+          <p class="t-label">02</p>
+          <h2 class="t-title" id="experience-title">Experience</h2>
+        </Cell>
+
+        <Cell subgrid class="statement">
+          {
+            statement.map((group) => (
+              <section class="group" aria-label={group.heading}>
+                <h3 class="t-label group-head">{group.heading}</h3>
+                <ol role="list" class="lines">
+                  {group.lines.map((line) => (
+                    <li class="line rule-draw">
+                      <p class="dates t-data">{line.dates}</p>
+                      <div class="body">
+                        <h4 class="t-subtitle">{line.title}</h4>
+                        <p class="org t-data">{line.org}</p>
+                        <p class="detail">{line.detail}</p>
+                      </div>
+                      {line.figure && (
+                        <p class="figure">
+                          <span class="value">{line.figure.value}</span>
+                          <span class="t-data-label">{line.figure.label}</span>
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            ))
+          }
+        </Cell>
+      </div>
+    </section>
+
+    <!-- ========================================================= Contact -->
+    <section class="section section-ruled" id="contact" aria-labelledby="contact-title">
+      <div class="container grid">
+        <Cell lg={{ span: 3 }} class="section-head">
+          <p class="t-label">03</p>
+          <h2 class="t-title" id="contact-title">Contact</h2>
+        </Cell>
+        <Cell lg={{ start: 4, span: 9 }} subgrid class="contact">
+          <p class="t-lede contact-intro">
+            Open to FP&amp;A and financial analysis roles in Los Angeles, and glad to talk through
+            any of the work above.
+          </p>
+          <dl class="channels">
+            {
+              contact.map((c) => (
+                <div class="channel rule-draw">
+                  <dt class="t-data-label">{c.label}</dt>
+                  <dd>
+                    <TextLink href={c.href} download={c.download}>
+                      {c.text}
+                    </TextLink>
+                  </dd>
+                </div>
+              ))
+            }
+          </dl>
+        </Cell>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container grid">
+      <Cell md={{ span: 6 }}>
+        <p class="t-data">Kyle Wagner · Thousand Oaks, California</p>
+      </Cell>
+      <Cell md={{ span: 6 }} class="footer-end">
+        <p class="t-data">
+          Set in Source Serif 4 and Inter · <a href="/styleguide">Style guide</a>
+        </p>
+      </Cell>
+    </div>
+  </footer>
+</BaseLayout>
+
+<style>
+  /* ------------------------------------------------------------- Hero */
+  .hero > .container {
+    row-gap: var(--space-6);
+    padding-block: var(--space-16) var(--space-24);
+  }
+
+  .hero-label {
+    margin-block-end: var(--space-2);
+  }
+
+  .hero-meta {
+    margin-block-start: var(--space-6);
+  }
+
+  .hero-intro {
+    display: grid;
+    gap: var(--space-8);
+    justify-items: start;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  /* Meta and intro share a row on desktop; the meta caption sits on the
+     intro's first baseline, under the display line's left edge. */
+  @media (min-width: 64rem) {
+    .hero-meta,
+    .hero-intro {
+      margin-block-start: var(--space-12);
+    }
+
+    .hero-meta {
+      padding-block-start: 0.45em;
+    }
+  }
+
+  /* --------------------------------------------------- Section heads */
+  .section-head {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    margin-block-end: var(--space-8);
+  }
+
+  .section-intro {
+    margin-block-end: var(--space-8);
+  }
+
+  @media (min-width: 64rem) {
+    .section-head {
+      margin-block-end: var(--space-12);
+    }
+
+    .section-intro {
+      align-self: end;
+      margin-block-end: var(--space-12);
+    }
+  }
+
+  section {
+    scroll-margin-block-start: var(--space-4);
+  }
+
+  /* ------------------------------------------------------------- Work */
+  .entries {
+    padding: 0;
+    border-block-end: var(--hairline) solid var(--rule);
+  }
+
+  .projects {
+    row-gap: var(--space-8);
+    margin-block-start: var(--space-16);
+  }
+
+  .projects-label {
+    grid-column: 1 / -1;
+  }
+
+  .project {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    padding-block-start: var(--space-4);
+  }
+
+  @media (min-width: 48rem) {
+    .project {
+      grid-column: span 6;
+    }
+  }
+
+  .project a {
+    text-decoration: none;
+  }
+
+  .project a:hover {
+    color: var(--accent);
+  }
+
+  .project .arrow {
+    display: inline-block;
+    color: var(--ink-3);
+    transition:
+      translate var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  .project a:hover .arrow {
+    color: currentColor;
+    translate: var(--nudge) calc(var(--nudge) * -1);
+  }
+
+  .project .t-caption {
+    max-inline-size: var(--measure);
+  }
+
+  .stack-list {
+    color: var(--ink-3);
+  }
+
+  /* ------------------------------------------------------- Statement */
+  .group {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  .group + .group {
+    margin-block-start: var(--space-12);
+  }
+
+  .group-head {
+    grid-column: 1 / -1;
+    padding-block-end: var(--space-3);
+  }
+
+  /* No closing rule: the next group's head rule, or the next section's,
+     closes it, and a second hairline just above would double up. */
+  .lines {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  /* The first line's rule is the heavier statement head rule. */
+  .line {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: var(--space-3);
+    padding-block: var(--space-6);
+  }
+
+  .line:first-child {
+    --rule-draw-color: var(--ink);
+  }
+
+  :where(.line > *) {
+    grid-column: 1 / -1;
+  }
+
+  .dates {
+    color: var(--ink-3);
+    padding-block-start: 0.3em;
+  }
+
+  .body {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .org {
+    color: var(--ink-2);
+  }
+
+  .detail {
+    margin-block-start: var(--space-2);
+    max-inline-size: var(--measure);
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+
+  .figure {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .figure .value {
+    font-family: var(--font-sans);
+    font-size: var(--step-0);
+    font-weight: var(--weight-ui-strong);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  @media (min-width: 48rem) {
+    .dates {
+      grid-column: 1 / span 3;
+    }
+
+    .body {
+      grid-column: 4 / span 6;
+    }
+
+    .figure {
+      grid-column: 10 / span 3;
+      flex-direction: column;
+      align-items: end;
+      gap: var(--space-1);
+      padding-block-start: 0.3em;
+      text-align: end;
+    }
+  }
+
+  /* ---------------------------------------------------------- Contact */
+  .contact-intro {
+    grid-column: 1 / -1;
+    max-inline-size: var(--measure);
+    margin-block-end: var(--space-8);
+  }
+
+  .channels {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    border-block-end: var(--hairline) solid var(--rule);
+  }
+
+  .channel {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: var(--space-1);
+    align-items: baseline;
+    padding-block: var(--space-4);
+  }
+
+  .channel > * {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 48rem) {
+    .channel dt {
+      grid-column: 1 / span 3;
+    }
+
+    .channel dd {
+      grid-column: 4 / -1;
+    }
+  }
+
+  /* ----------------------------------------------------------- Footer */
+  .site-footer > .container {
+    row-gap: var(--space-2);
+    padding-block: var(--space-8) var(--space-12);
+    border-block-start: var(--hairline) solid var(--rule);
+    color: var(--ink-3);
+  }
+
+  @media (min-width: 48rem) {
+    .footer-end {
+      text-align: end;
+    }
+  }
+</style>
