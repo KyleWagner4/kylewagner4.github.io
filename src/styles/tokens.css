@@ -1,0 +1,179 @@
+/*
+  Design tokens. Every value in the system derives from this file.
+
+  Color: OKLCH, with light and dark defined together through light-dark().
+  The resolved scheme follows prefers-color-scheme unless data-theme is set,
+  on the root or on any element (the style guide renders both side by side).
+  Contrast ratios against --paper are noted per text token (WCAG AA = 4.5).
+*/
+
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+
+    /* ---------------------------------------------------------------- Color */
+
+    /* Light is warm paper; dark is a warm graphite, lifted off black so
+       hairlines and surfaces still separate. Chroma stays low in both. */
+    --paper:        light-dark(oklch(0.985 0.004 85), oklch(0.195 0.006 70));
+    --paper-sunken: light-dark(oklch(0.962 0.006 85), oklch(0.165 0.005 70));
+    --paper-raised: light-dark(oklch(0.997 0.002 85), oklch(0.235 0.007 70));
+
+    --ink:   light-dark(oklch(0.235 0.012 75), oklch(0.915 0.010 85)); /* 16.0 / 14.2 */
+    --ink-2: light-dark(oklch(0.430 0.012 75), oklch(0.775 0.010 85)); /*  7.8 /  9.0 */
+    --ink-3: light-dark(oklch(0.530 0.010 75), oklch(0.660 0.009 85)); /*  5.1 /  5.9 */
+
+    /* Rules are structure, not text, so they sit well below 3:1.
+       --rule-control is for input borders, which WCAG 1.4.11 holds to 3:1. */
+    --rule:         light-dark(oklch(0.885 0.008 80), oklch(0.310 0.006 70));
+    --rule-strong:  light-dark(oklch(0.740 0.010 80), oklch(0.450 0.008 70));
+    --rule-control: light-dark(oklch(0.620 0.010 80), oklch(0.540 0.008 70)); /* 3.5 / 3.6 */
+
+    /* The one accent: a deep ink blue. Lighter and calmer in dark mode
+       rather than a straight inversion. */
+    --accent:       light-dark(oklch(0.470 0.125 258), oklch(0.770 0.095 252)); /* 6.6 / 8.9 */
+    --accent-hover: light-dark(oklch(0.400 0.130 258), oklch(0.840 0.080 252));
+    --on-accent:    var(--paper);
+    --accent-wash:  color-mix(in oklch, var(--accent) 12%, var(--paper));
+
+    /* Signal colors for gains and losses in data only, never decoration.
+       Statements still mark negatives with parentheses, so color is never
+       the only cue. */
+    --positive: light-dark(oklch(0.50 0.10 155), oklch(0.74 0.12 155)); /* 5.5 / 8.3 */
+    --negative: light-dark(oklch(0.52 0.16 28),  oklch(0.72 0.13 28));  /* 5.7 / 7.0 */
+
+    --selection: color-mix(in oklch, var(--accent) 22%, var(--paper));
+    --focus-ring: var(--accent);
+
+    /* ----------------------------------------------------------- Typography */
+
+    --font-serif: "KW Serif", "KW Serif Fallback", Georgia, serif;
+    --font-sans: "Inter", "Inter Fallback", Arial, system-ui, sans-serif;
+    --font-mono: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+
+    /*
+      Fluid modular scale, 360px to 1440px viewports.
+      Base 17px at ratio 1.15 on small screens; 19px at ratio 1.25 on large.
+      Steps below 0 are held near-fixed so captions never get too small.
+    */
+    --step--2: clamp(0.7813rem, 0.7750rem + 0.0278vw, 0.8000rem); /* 12.5–12.8 */
+    --step--1: clamp(0.9239rem, 0.9152rem + 0.0386vw, 0.9500rem); /* 14.8–15.2 */
+    --step-0:  clamp(1.0625rem, 1.0208rem + 0.1852vw, 1.1875rem); /* 17.0–19.0 */
+    --step-1:  clamp(1.2219rem, 1.1344rem + 0.3889vw, 1.4844rem); /* 19.5–23.8 */
+    --step-2:  clamp(1.4052rem, 1.2551rem + 0.6671vw, 1.8555rem); /* 22.5–29.7 */
+    --step-3:  clamp(1.6159rem, 1.3815rem + 1.0421vw, 2.3193rem); /* 25.9–37.1 */
+    --step-4:  clamp(1.8583rem, 1.5114rem + 1.5420vw, 2.8992rem); /* 29.7–46.4 */
+    --step-5:  clamp(2.1371rem, 1.6414rem + 2.2028vw, 3.6240rem); /* 34.2–58.0 */
+    --step-6:  clamp(2.4576rem, 1.7669rem + 3.0701vw, 4.5300rem); /* 39.3–72.5 */
+    --step-7:  clamp(2.8263rem, 1.8809rem + 4.2017vw, 5.6624rem); /* 45.2–90.6 */
+
+    --leading-display: 1.04;
+    --leading-heading: 1.18;
+    --leading-body: 1.55;
+    --leading-caption: 1.4;
+
+    /* Tracking tightens as size grows; small caps open up. */
+    --tracking-display: -0.022em;
+    --tracking-heading: -0.012em;
+    --tracking-caps: 0.075em;
+    --tracking-caps-sans: 0.06em;
+
+    /* Serif weights stay within the subset's 300–700 range, Inter within
+       400–650 (see scripts/subset-fonts.py). */
+    --weight-display: 380;
+    --weight-heading: 540;
+    --weight-body: 400;
+    --weight-strong: 620;
+    --weight-ui: 450;
+    --weight-ui-strong: 580;
+
+    /* Optical size per role. Display goes to the font's maximum for its
+       finer contrast; captions use a sturdier small-size cut. Body text uses
+       font-optical-sizing: auto. */
+    --opsz-display: 60;
+    --opsz-heading: 32;
+    --opsz-caption: 9;
+
+    /* ------------------------------------------------------------- Spacing */
+
+    /* One base unit. --space-N is N units. */
+    --unit: 0.25rem;
+    --space-1: calc(var(--unit) * 1);   /*   4 */
+    --space-2: calc(var(--unit) * 2);   /*   8 */
+    --space-3: calc(var(--unit) * 3);   /*  12 */
+    --space-4: calc(var(--unit) * 4);   /*  16 */
+    --space-6: calc(var(--unit) * 6);   /*  24 */
+    --space-8: calc(var(--unit) * 8);   /*  32 */
+    --space-12: calc(var(--unit) * 12); /*  48 */
+    --space-16: calc(var(--unit) * 16); /*  64 */
+    --space-24: calc(var(--unit) * 24); /*  96 */
+    --space-32: calc(var(--unit) * 32); /* 128 */
+
+    --space-section: clamp(var(--space-16), 9vw, var(--space-32));
+
+    /* ---------------------------------------------------------------- Grid */
+
+    --grid-columns: 12;
+    --grid-gutter: clamp(var(--space-4), 2.2vw, var(--space-8));
+    --grid-margin: clamp(var(--space-4), 5vw, var(--space-24));
+    --grid-max: 82rem;
+    --measure: 36em;
+
+    /* ---------------------------------------------------- Rules and radius */
+
+    --hairline: 1px;
+    --radius: 2px;
+
+    /* --------------------------------------------------------------- Motion */
+
+    /* Deceleration curves: things arrive quickly and settle, like an
+       object with mass. No linear or default ease anywhere. */
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.6, 0, 0.3, 1);
+    --ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+
+    --dur-instant: 90ms;
+    --dur-fast: 160ms;
+    --dur-base: 240ms;
+    --dur-slow: 420ms;
+
+    /* Distance for small positional nudges (link arrows, button press). */
+    --nudge: 2px;
+  }
+
+  /* On 2x screens a true half-pixel rule reads as a printed hairline. */
+  @media (min-resolution: 2dppx) {
+    :root {
+      --hairline: 0.5px;
+    }
+  }
+
+  /* Light text on a dark ground looks heavier, so dark mode sheds a little
+     weight. data-theme works on any element, so a panel can force a scheme. */
+  [data-theme="light"] {
+    color-scheme: light;
+    --weight-body: 400;
+    --weight-ui: 450;
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --weight-body: 370;
+    --weight-ui: 420;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --weight-body: 370;
+      --weight-ui: 420;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --nudge: 0px;
+      --dur-base: 1ms;
+      --dur-slow: 1ms;
+    }
+  }
+}
