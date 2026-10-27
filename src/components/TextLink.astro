@@ -7,14 +7,15 @@
 interface Props {
   href: string;
   external?: boolean;
+  download?: boolean;
   class?: string;
 }
 
-const { href, class: className } = Astro.props;
+const { href, download, class: className } = Astro.props;
 const external = Astro.props.external ?? /^https?:\/\//.test(href);
 ---
 
-<a class:list={['text-link', className]} href={href} rel={external ? 'noopener' : undefined}>
+<a class:list={['text-link', className]} href={href} download={download} rel={external ? 'noopener' : undefined}>
   <slot />
   {
     external ? (
