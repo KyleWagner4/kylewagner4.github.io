@@ -1,0 +1,206 @@
+/* Reset, element defaults, focus, selection and page transitions. */
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    display: block;
+    max-width: 100%;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  ul[role="list"],
+  ol[role="list"] {
+    list-style: none;
+    padding: 0;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    background: var(--paper);
+    scrollbar-gutter: stable;
+    hanging-punctuation: first allow-end last;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-serif);
+    font-size: var(--step-0);
+    font-weight: var(--weight-body);
+    line-height: var(--leading-body);
+    font-optical-sizing: auto;
+    font-kerning: normal;
+    /* Every figure on the site aligns like a statement column. */
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  /* An element that forces a scheme re-resolves color and weight, which
+     otherwise inherit as already-computed values from the body. */
+  [data-theme] {
+    color: var(--ink);
+    font-weight: var(--weight-body);
+  }
+
+  /* Light text on dark ground blooms with subpixel smoothing. */
+  [data-theme="dark"] {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: var(--weight-heading);
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-heading);
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: var(--step-5);
+  }
+
+  h2 {
+    font-size: var(--step-3);
+  }
+
+  h3 {
+    font-size: var(--step-1);
+  }
+
+  h4 {
+    font-size: var(--step-0);
+  }
+
+  p,
+  li,
+  dd,
+  figcaption,
+  blockquote {
+    text-wrap: pretty;
+  }
+
+  strong,
+  b {
+    font-weight: var(--weight-strong);
+  }
+
+  small {
+    font-size: var(--step--1);
+  }
+
+  /* Abbreviations and acronyms set in true small caps. */
+  abbr {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+  }
+
+  code,
+  kbd {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+  }
+
+  a {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--hairline);
+    text-decoration-color: var(--rule-strong);
+    text-underline-offset: 0.2em;
+    text-decoration-skip-ink: auto;
+    transition:
+      text-decoration-color var(--dur-fast) var(--ease-out),
+      text-underline-offset var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  a:hover {
+    text-decoration-color: var(--accent);
+    text-underline-offset: 0.14em;
+  }
+
+  hr {
+    border: 0;
+    border-block-start: var(--hairline) solid var(--rule);
+  }
+
+  ::selection {
+    background: var(--selection);
+    color: var(--ink);
+  }
+
+  /* Focus: a crisp accent ring that settles in from a wider offset. */
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+    border-radius: var(--radius);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :focus-visible {
+      animation: focus-settle var(--dur-fast) var(--ease-out);
+    }
+  }
+
+  @keyframes focus-settle {
+    from {
+      outline-offset: 6px;
+    }
+  }
+
+  /* Cross-document view transitions: a short, quiet crossfade. */
+  @media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+      navigation: auto;
+    }
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: var(--dur-base);
+    animation-timing-function: var(--ease-out);
+  }
+}

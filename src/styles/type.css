@@ -1,0 +1,122 @@
+/*
+  Text roles. Each sets size, weight, optical size, leading and tracking
+  together so a role reads the same wherever it appears.
+*/
+
+@layer type {
+  .t-display {
+    font-family: var(--font-serif);
+    font-size: var(--step-7);
+    font-weight: var(--weight-display);
+    font-variation-settings: "opsz" var(--opsz-display);
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-display);
+    text-wrap: balance;
+  }
+
+  .t-headline {
+    font-family: var(--font-serif);
+    font-size: var(--step-5);
+    font-weight: var(--weight-display);
+    font-variation-settings: "opsz" var(--opsz-display);
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-display);
+    text-wrap: balance;
+  }
+
+  .t-title {
+    font-family: var(--font-serif);
+    font-size: var(--step-3);
+    font-weight: var(--weight-heading);
+    font-variation-settings: "opsz" var(--opsz-heading);
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-heading);
+    text-wrap: balance;
+  }
+
+  .t-subtitle {
+    font-family: var(--font-serif);
+    font-size: var(--step-1);
+    font-weight: var(--weight-heading);
+    line-height: var(--leading-heading);
+    text-wrap: balance;
+  }
+
+  .t-lede {
+    font-family: var(--font-serif);
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+
+  .t-body {
+    font-family: var(--font-serif);
+    font-size: var(--step-0);
+    line-height: var(--leading-body);
+  }
+
+  .t-caption {
+    font-family: var(--font-serif);
+    font-size: var(--step--1);
+    font-variation-settings: "opsz" var(--opsz-caption);
+    line-height: var(--leading-caption);
+    color: var(--ink-3);
+  }
+
+  /* Labels and eyebrows: true small caps from the serif, tracked open. */
+  .t-label {
+    font-family: var(--font-serif);
+    font-size: var(--step-0);
+    font-variant-caps: all-small-caps;
+    font-variation-settings: "opsz" var(--opsz-caption);
+    font-weight: var(--weight-ui-strong);
+    letter-spacing: var(--tracking-caps);
+    line-height: var(--leading-caption);
+    color: var(--ink-2);
+  }
+
+  /* Data, tables and interface text. */
+  .t-data {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: var(--weight-ui);
+    line-height: var(--leading-caption);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  /* Inter has no small caps, so sans labels use tracked capitals at a
+     reduced size, with case-sensitive punctuation. */
+  .t-data-label {
+    font-family: var(--font-sans);
+    font-size: var(--step--2);
+    font-weight: var(--weight-ui-strong);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps-sans);
+    font-feature-settings: "case";
+    line-height: var(--leading-caption);
+    color: var(--ink-3);
+  }
+
+  :where(.t-data, .t-data-label) abbr {
+    font-variant-caps: normal;
+  }
+
+  .t-figure {
+    font-family: var(--font-serif);
+    font-size: var(--step-5);
+    font-weight: var(--weight-display);
+    font-variation-settings: "opsz" var(--opsz-display);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .measure {
+    max-inline-size: var(--measure);
+  }
+
+  .muted {
+    color: var(--ink-2);
+  }
+}

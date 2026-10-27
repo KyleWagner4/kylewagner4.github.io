@@ -1,0 +1,50 @@
+/*
+  Self-hosted variable fonts, subset by scripts/subset-fonts.py.
+  The roman serif and Inter are preloaded in BaseLayout; the italic loads
+  only on pages that use it.
+
+  Fallback faces are metric-matched (size-adjust and vertical overrides
+  computed from the real fonts) so the swap causes no layout shift.
+*/
+
+@font-face {
+  font-family: "KW Serif";
+  src: url("../assets/fonts/serif-roman.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "KW Serif";
+  src: url("../assets/fonts/serif-italic.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/inter.woff2") format("woff2");
+  font-weight: 400 650;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "KW Serif Fallback";
+  src: local("Georgia");
+  size-adjust: 101.71%;
+  ascent-override: 101.86%;
+  descent-override: 32.94%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial");
+  size-adjust: 107.48%;
+  ascent-override: 90.14%;
+  descent-override: 22.44%;
+  line-gap-override: 0%;
+}

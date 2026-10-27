@@ -1,0 +1,7 @@
+/* Layer order: later layers win. Component styles are unlayered and win over all. */
+@layer reset, tokens, base, type, layout, components, utilities;
+
+@import "./fonts.css";
+@import "./tokens.css";
+@import "./base.css";
+@import "./type.css";
