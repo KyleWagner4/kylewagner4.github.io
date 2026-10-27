@@ -34,7 +34,9 @@
     --accent:       light-dark(oklch(0.470 0.125 258), oklch(0.770 0.095 252)); /* 6.6 / 8.9 */
     --accent-hover: light-dark(oklch(0.400 0.130 258), oklch(0.840 0.080 252));
     --on-accent:    var(--paper);
-    --accent-wash:  color-mix(in oklch, var(--accent) 12%, var(--paper));
+    /* Mixes use oklab: oklch would swing the hue on the way from a
+       near-neutral paper to the blue accent. */
+    --accent-wash:  color-mix(in oklab, var(--accent) 12%, var(--paper));
 
     /* Signal colors for gains and losses in data only, never decoration.
        Statements still mark negatives with parentheses, so color is never
@@ -42,7 +44,7 @@
     --positive: light-dark(oklch(0.50 0.10 155), oklch(0.74 0.12 155)); /* 5.5 / 8.3 */
     --negative: light-dark(oklch(0.52 0.16 28),  oklch(0.72 0.13 28));  /* 5.7 / 7.0 */
 
-    --selection: color-mix(in oklch, var(--accent) 22%, var(--paper));
+    --selection: color-mix(in oklab, var(--accent) 22%, var(--paper));
     --focus-ring: var(--accent);
 
     /* ----------------------------------------------------------- Typography */
